@@ -4,9 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <fragment
+    <EditText
         android:id="@+id/fragment_container"
-        android:name="com.pipe.my_note.FirstFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

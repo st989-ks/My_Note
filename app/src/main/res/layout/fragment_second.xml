@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context=".SecondActivity">
 
-    <androidx.appcompat.widget.AppCompatEditText
+    <TextView
         android:id="@+id/zettelkasten"
         android:name="com.pipe.my_note.SecondFragment"
         android:layout_width="match_parent"

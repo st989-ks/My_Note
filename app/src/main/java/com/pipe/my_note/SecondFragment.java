@@ -1,16 +1,15 @@
 package com.pipe.my_note;
 
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
 public class SecondFragment extends Fragment {
@@ -38,17 +37,22 @@ public class SecondFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_second, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        AppCompatImageView imageCoatOfArms = view.findViewById(R.id.zettelkasten);
-        // Получить из ресурсов массив указателей на изображения гербов
-        TypedArray images = getResources().obtainTypedArray(R.array.text);
-        // Выбрать по индексу подходящий
-        imageCoatOfArms.setImageResource(images.getResourceId(index, -1));
+
+        TextView textView = getView().findViewById(R.id.zettelkasten);
+        TypedArray text = getResources().obtainTypedArray(R.array.text);
+        textView.setText(text.getResourceId(index, -1));
+
+//        TextView textView = view.findViewsWithText(R.layout.activity_zettelkasten);
+//        AppCompatImageView imageCoatOfArms = view.findViewById(R.id.zettelkasten);
+//         Получить из ресурсов массив указателей на изображения гербов
+//        TypedArray images = getResources().obtainTypedArray(R.array.text);
+//         Выбрать по индексу подходящий
+//        imageCoatOfArms.setImageResource(images.getResourceId(index, -1));
     }
 }
