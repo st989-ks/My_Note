@@ -4,11 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SecondActivity">
+    tools:context=".SecondFragment">
 
     <TextView
         android:id="@+id/zettelkasten_name"
-        android:name="com.pipe.my_note.SecondFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/nameCart"
@@ -16,7 +15,6 @@
 
     <TextView
         android:id="@+id/zettelkasten_created"
-        android:name="com.pipe.my_note.SecondFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/created"
@@ -24,7 +22,6 @@
 
     <TextView
         android:id="@+id/zettelkasten_tags"
-        android:name="com.pipe.my_note.SecondFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/tags"
@@ -32,7 +29,6 @@
 
     <TextView
         android:id="@+id/zettelkasten_key"
-        android:name="com.pipe.my_note.SecondFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/key"
@@ -40,7 +36,6 @@
 
     <TextView
         android:id="@+id/zettelkasten_link_card"
-        android:name="com.pipe.my_note.SecondFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/link_card"
@@ -48,7 +43,6 @@
 
     <TextView
         android:id="@+id/zettelkasten_text"
-        android:name="com.pipe.my_note.SecondFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/text"

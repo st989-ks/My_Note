@@ -23,9 +23,6 @@ public class FirstFragment extends Fragment {
     private boolean isLandscape;
     private Content completionNote;
 
-    public FirstFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,9 +42,8 @@ public class FirstFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         isLandscape = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
         if (savedInstanceState != null) {
@@ -72,13 +68,12 @@ public class FirstFragment extends Fragment {
     private void initList(View view) {
         LinearLayout layoutView = (LinearLayout) view;
         String[] tags = getResources().getStringArray(R.array.tags);
-        Context context = getContext();
         for (int i = 0; i < tags.length; i++) {
+            String tag = tags[i];
+            Context context = getContext();
             if (context != null) {
-                String tag = tags[i];
                 TextView textView = new TextView(context);
                 textView.setText(tag);
-                textView.setTextSize(30);
                 layoutView.addView(textView);
                 final int fi = i;
                 textView.setOnClickListener(v -> {
@@ -102,7 +97,7 @@ public class FirstFragment extends Fragment {
         SecondFragment secondFragment = SecondFragment.newInstance(completionNote);
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.zettelkasten, secondFragment);
+        fragmentTransaction.replace(R.id.second_zettelkasten, secondFragment);
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction.commit();
 

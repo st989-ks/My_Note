@@ -15,8 +15,7 @@ public class SecondFragment extends Fragment {
     private Content content;
 
     public static SecondFragment newInstance(Content content) {
-        SecondFragment f = new SecondFragment();    // создание
-        // Передача параметра
+        SecondFragment f = new SecondFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_SECOND_NOTE, content);
         f.setArguments(args);
