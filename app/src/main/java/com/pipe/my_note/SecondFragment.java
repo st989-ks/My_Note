@@ -1,27 +1,24 @@
 package com.pipe.my_note;
 
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class SecondFragment extends Fragment {
 
-    static final String ARG_INDEX = "index";
-    private int index;
+    static final String ARG_SECOND_NOTE = "content";
 
-    public static SecondFragment newInstance(int index) {
+    private Content content;
+
+    public static SecondFragment newInstance(Content content) {
         SecondFragment f = new SecondFragment();    // создание
         // Передача параметра
         Bundle args = new Bundle();
-        args.putInt(ARG_INDEX, index);
+        args.putParcelable(ARG_SECOND_NOTE, content);
         f.setArguments(args);
         return f;
     }
@@ -30,29 +27,26 @@ public class SecondFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            index = getArguments().getInt(ARG_INDEX);
+            content = getArguments().getParcelable(ARG_SECOND_NOTE);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_second, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        TextView textView = getView().findViewById(R.id.zettelkasten);
-        TypedArray text = getResources().obtainTypedArray(R.array.text);
-        textView.setText(text.getResourceId(index, -1));
-
-//        TextView textView = view.findViewsWithText(R.layout.activity_zettelkasten);
-//        AppCompatImageView imageCoatOfArms = view.findViewById(R.id.zettelkasten);
-//         Получить из ресурсов массив указателей на изображения гербов
-//        TypedArray images = getResources().obtainTypedArray(R.array.text);
-//         Выбрать по индексу подходящий
-//        imageCoatOfArms.setImageResource(images.getResourceId(index, -1));
+        View view = inflater.inflate(R.layout.fragment_second, container, false);
+        TextView tvName = view.findViewById(R.id.zettelkasten_name);
+        tvName.setText(content.getNameCard());
+        TextView tvCreated = view.findViewById(R.id.zettelkasten_created);
+        tvCreated.setText(content.getCreated());
+        TextView tvTags = view.findViewById(R.id.zettelkasten_tags);
+        tvTags.setText(content.getTags());
+        TextView tvKey = view.findViewById(R.id.zettelkasten_key);
+        tvKey.setText(Integer.toString((content.getKey())));
+        TextView tvLinkCard = view.findViewById(R.id.zettelkasten_link_card);
+        tvLinkCard.setText(content.getLinkCard());
+        TextView tvText = view.findViewById(R.id.zettelkasten_text);
+        tvText.setText(content.getTextNote());
+        return view;
     }
 }

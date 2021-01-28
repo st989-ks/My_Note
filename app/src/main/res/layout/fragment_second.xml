@@ -7,9 +7,51 @@
     tools:context=".SecondActivity">
 
     <TextView
-        android:id="@+id/zettelkasten"
+        android:id="@+id/zettelkasten_name"
         android:name="com.pipe.my_note.SecondFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:text="@string/nameCart"
+        android:textSize="@dimen/text_size_" />
+
+    <TextView
+        android:id="@+id/zettelkasten_created"
+        android:name="com.pipe.my_note.SecondFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/created"
+        android:textSize="@dimen/text_size_" />
+
+    <TextView
+        android:id="@+id/zettelkasten_tags"
+        android:name="com.pipe.my_note.SecondFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/tags"
+        android:textSize="@dimen/text_size_" />
+
+    <TextView
+        android:id="@+id/zettelkasten_key"
+        android:name="com.pipe.my_note.SecondFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/key"
+        android:textSize="@dimen/text_size_" />
+
+    <TextView
+        android:id="@+id/zettelkasten_link_card"
+        android:name="com.pipe.my_note.SecondFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/link_card"
+        android:textSize="@dimen/text_size_" />
+
+    <TextView
+        android:id="@+id/zettelkasten_text"
+        android:name="com.pipe.my_note.SecondFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text"
+        android:textSize="@dimen/text_size_" />
 
 </LinearLayout>

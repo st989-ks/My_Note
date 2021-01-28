@@ -3,6 +3,7 @@ package com.pipe.my_note;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,26 +14,28 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 public class FirstFragment extends Fragment {
 
+    private static final String ARG_INDEX = "CompletionNote";
     private boolean isLandscape;
+    private Content completionNote;
 
     public FirstFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_first, container, false);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(ARG_INDEX, completionNote);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -45,32 +48,30 @@ public class FirstFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // Определение, можно ли будет расположить рядом во фрагменте
         isLandscape = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
-        // Если можно рядом, то сделаем это
-//        if (isLandscape) {
-//            showLandTheCard(0);
-//        }
+        if (savedInstanceState != null) {
+            completionNote = savedInstanceState.getParcelable(ARG_INDEX);
+        } else {
+            completionNote = newNote(0);
+        }
+
+        if (isLandscape) {
+            showLandTheCard(completionNote);
+        }
     }
 
-    public static FirstFragment newInstance(String param1, String param2) {
-        FirstFragment fragment = new FirstFragment();
-        Bundle args = new Bundle();
-        /*args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        */
-        fragment.setArguments(args);
-        return fragment;
+    private Content newNote(int index) {
+        Resources res = getResources();
+        return new Content(res.getStringArray(R.array.tags)[index],
+                res.getStringArray(R.array.date)[index], res.getStringArray(R.array.tags)[index],
+                res.getIntArray(R.array.key)[index], res.getStringArray(R.array.related_cards)[index],
+                res.getStringArray(R.array.text)[index]);
     }
 
     private void initList(View view) {
         LinearLayout layoutView = (LinearLayout) view;
         String[] tags = getResources().getStringArray(R.array.tags);
-        // В этом цикле создаём элемент TextView,
-        // заполняем его значениями,
-        // и добавляем на экран.
-        // Кроме того, создаём обработку касания на элемент
         Context context = getContext();
         for (int i = 0; i < tags.length; i++) {
             if (context != null) {
@@ -80,40 +81,40 @@ public class FirstFragment extends Fragment {
                 textView.setTextSize(30);
                 layoutView.addView(textView);
                 final int fi = i;
-                textView.setOnClickListener(v -> showTheCard(fi));
+                textView.setOnClickListener(v -> {
+                    completionNote = newNote(fi);
+                    showTheCard(completionNote);
+                });
             }
         }
     }
 
-    private void showTheCard(int index) {
+    private void showTheCard(Content completionNote) {
         if (isLandscape) {
-//            showLandTheCard(index);
+            showLandTheCard(completionNote);
         } else {
-            showPortTheCard(index);
+            showPortTheCard(completionNote);
         }
     }
 
-//    private void showLandTheCard(int index) {
-//        // Создаём новый фрагмент с текущей позицией
-//        SecondFragment detail = SecondFragment.newInstance(index);
-//        // Выполняем транзакцию по замене фрагмента
-//        FragmentActivity context = getActivity();
-//        if (context != null) {
-//            FragmentManager fragmentManager = context.getSupportFragmentManager();
-//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentTransaction.replace(R.id.zettelkasten, detail);  // замена фрагмента
-//            //fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//            fragmentTransaction.commit();
-//        }
-//    }
+    private void showLandTheCard(Content completionNote) {
+        // Создаём новый фрагмент с текущей позицией
+        SecondFragment secondFragment = SecondFragment.newInstance(completionNote);
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.zettelkasten, secondFragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction.commit();
 
-    private void showPortTheCard(int index) {
+    }
+
+    private void showPortTheCard(Content completionNote) {
         // Откроем вторую activity
         Context context = getContext();
         if (context != null) {
             Intent intent = new Intent(context, SecondActivity.class);
             // и передадим туда параметры
-            intent.putExtra(SecondFragment.ARG_INDEX, index);
+            intent.putExtra(SecondFragment.ARG_SECOND_NOTE, completionNote);
             startActivity(intent);
         }
     }
