@@ -1,4 +1,5 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_size_">20dp</dimen>
+    <dimen name="size_user_name">30sp</dimen>
 </resources>
