@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment;
 public class SecondFragment extends Fragment {
 
     static final String ARG_SECOND_NOTE = "content";
+    private Note content;
 
-    private Content content;
+    public static SecondFragment newInstance(Note content) {
 
-    public static SecondFragment newInstance(Content content) {
         SecondFragment f = new SecondFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_SECOND_NOTE, content);
@@ -35,17 +35,17 @@ public class SecondFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_second, container, false);
         TextView tvName = view.findViewById(R.id.zettelkasten_name);
-        tvName.setText(content.getNameCard());
+        tvName.setText(content.getTitle());
         TextView tvCreated = view.findViewById(R.id.zettelkasten_created);
-        tvCreated.setText(content.getCreated());
+        tvCreated.setText(content.getFormatDate());
         TextView tvTags = view.findViewById(R.id.zettelkasten_tags);
-        tvTags.setText(content.getTags());
+        tvTags.setText(content.getTag());
         TextView tvKey = view.findViewById(R.id.zettelkasten_key);
         tvKey.setText(Integer.toString((content.getKey())));
         TextView tvLinkCard = view.findViewById(R.id.zettelkasten_link_card);
-        tvLinkCard.setText(content.getLinkCard());
+        tvLinkCard.setText(Integer.toString((content.getLinkCard())));
         TextView tvText = view.findViewById(R.id.zettelkasten_text);
-        tvText.setText(content.getTextNote());
+        tvText.setText(content.getText());
         return view;
     }
 }

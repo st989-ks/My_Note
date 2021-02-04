@@ -17,37 +17,27 @@ import com.google.android.material.navigation.NavigationView;
 public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        class Local {
+        }
+        ;
+        getName(Local.class.getEnclosingMethod().getName());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-    }
+        FragmentHandler.replaceFragment(MainActivity.this, new FirstFragment(), R.id.root_of_note, true);
 
-    private void initDrawer(Toolbar toolbar) {
-        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.open_nav_drawer, R.string.close_nav_drawer
-        );
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        NavigationView navigationView = findViewById(R.id.navigation_bar);
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            switch (itemId) {
-                case R.id.menu_settings:
-                    FragmentHandler.replaceFragment(MainActivity.this, new SettingsFragment(), FragmentHandler.getIdFromOrientation(MainActivity.this), true);
-                    drawer.closeDrawer(GravityCompat.START);
-                    return true;
-                case R.id.menu_about:
-                    FragmentHandler.replaceFragment(MainActivity.this, new AboutFragment(), FragmentHandler.getIdFromOrientation(MainActivity.this), true);
-                    drawer.closeDrawer(GravityCompat.START);
-                    return true;
-            }
-            return false;
-        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        class Local {
+        }
+        ;
+        getName(Local.class.getEnclosingMethod().getName());
+
         getMenuInflater().inflate(R.menu.menu_search, menu);
         MenuItem search = menu.findItem(R.id.menu_search);
         SearchView searchText = (SearchView) search.getActionView();
@@ -64,17 +54,82 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
     private void initView() {
+
+        class Local {
+        }
+        ;
+        getName(Local.class.getEnclosingMethod().getName());
+
         Toolbar toolbar = initToolBar();
         initDrawer(toolbar);
     }
 
     private Toolbar initToolBar() {
+
+        class Local {
+        }
+        ;
+        getName(Local.class.getEnclosingMethod().getName());
+
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         return toolbar;
+    }
+
+    private void initDrawer(Toolbar toolbar) {
+
+        class Local {
+        }
+        ;
+        getName(Local.class.getEnclosingMethod().getName());
+
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.open_nav_drawer, R.string.close_nav_drawer
+        );
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        NavigationView navigationView = findViewById(R.id.navigation_bar);
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            switch (itemId) {
+                case R.id.menu_settings:
+                    FragmentHandler.replaceFragment(MainActivity.this, new SettingsFragment(), FragmentHandler.getIdFromOrientation(MainActivity.this), true);
+                    drawer.closeDrawer(GravityCompat.START);
+                    getName(String.format("%s", "menu_settings"));
+                    return true;
+                case R.id.menu_about:
+                    FragmentHandler.replaceFragment(MainActivity.this, new AboutFragment(), FragmentHandler.getIdFromOrientation(MainActivity.this), true);
+                    drawer.closeDrawer(GravityCompat.START);
+                    getName(String.format("%s", "menu_about"));
+                    return true;
+            }
+            return false;
+        });
+//        navigationView.setNavigationItemSelectedListener(item -> {
+//            int itemId = item.getItemId();
+//            switch (itemId) {
+//                case R.id.menu_settings:
+//                    FragmentHandler.replaceFragment(MainActivity.this, new SettingsFragment(), FragmentHandler.getIdFromOrientation(MainActivity.this), true);
+//                    drawer.closeDrawer(GravityCompat.START);
+//                    getName(String.format("%s", "menu_settings"));
+//                    return true;
+//                case R.id.menu_about:
+//                    FragmentHandler.replaceFragment(MainActivity.this, new AboutFragment(), FragmentHandler.getIdFromOrientation(MainActivity.this), true);
+//                    drawer.closeDrawer(GravityCompat.START);
+//                    getName(String.format("%s", "menu_about"));
+//                    return true;
+//            }
+//            return false;
+//        });
+    }
+
+    public void getName(String text) {
+        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
     }
 }

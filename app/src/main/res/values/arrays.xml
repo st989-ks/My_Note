@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string-array name="title">
+        <item>Игры</item>
+        <item>Жизнь</item>
+        <item>Страны</item>
+        <item>Города</item>
+        <item>Android</item>
+    </string-array>
+
     <integer-array name="key">
         <item>1</item>
         <item>2</item>
@@ -10,11 +18,11 @@
     </integer-array>
 
     <string-array name="date">
-        <item>21.01.2021</item>
-        <item>21.01.2021</item>
-        <item>21.01.2021</item>
-        <item>21.01.2021</item>
-        <item>21.01.2021</item>
+        <item>1612224000000</item>
+        <item>1612454400000</item>
+        <item>1612814400000</item>
+        <item>1613433600000</item>
+        <item>1612152000000</item>
     </string-array>
 
     <string-array name="tags">
@@ -25,13 +33,13 @@
         <item>#android</item>
     </string-array>
 
-    <string-array name="related_cards">
+    <integer-array name="related_cards">
         <item>2</item>
         <item>4</item>
         <item>3</item>
         <item>2</item>
         <item>1</item>
-    </string-array>
+    </integer-array>
 
     <string-array name="text">
         <item>Игра — тип осмысленной непродуктивной деятельности, где мотив лежит не в её результате, а в самом процессе.</item>

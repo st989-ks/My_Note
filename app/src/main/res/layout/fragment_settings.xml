@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/margin_10"
     tools:context=".SettingsFragment"
     tools:ignore="MissingDefaultResource">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/settings_fragment" />
+        android:text="@string/settings_fragment"
+        android:textSize="@dimen/text_size_40" />
 
 </FrameLayout>
