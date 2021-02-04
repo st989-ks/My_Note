@@ -1,4 +1,9 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="text_size_">20dp</dimen>
+    <dimen name="text_size_20">20dp</dimen>
+    <dimen name="size_user_name">30sp</dimen>
+    <dimen name="text_size_40">40dp</dimen>
+    <dimen name="margin_10">10dp</dimen>
+    <dimen name="margin_3">3dp</dimen>
+    <dimen name="margin_1">1dp</dimen>
 </resources>

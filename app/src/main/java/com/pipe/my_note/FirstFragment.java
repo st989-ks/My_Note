@@ -1,27 +1,27 @@
 package com.pipe.my_note;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 public class FirstFragment extends Fragment {
 
     private static final String ARG_INDEX = "CompletionNote";
+    private ArrayList<Note> notesArray = new ArrayList<>();
     private boolean isLandscape;
-    private Content completionNote;
+    private int completionNote;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,13 +31,14 @@ public class FirstFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putParcelable(ARG_INDEX, completionNote);
+        outState.putInt(ARG_INDEX, completionNote);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setNotesArray();
         initList(view);
     }
 
@@ -47,44 +48,50 @@ public class FirstFragment extends Fragment {
         isLandscape = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
         if (savedInstanceState != null) {
-            completionNote = savedInstanceState.getParcelable(ARG_INDEX);
+            completionNote = savedInstanceState.getInt(ARG_INDEX);
         } else {
-            completionNote = newNote(0);
+            completionNote = 0;
         }
-
         if (isLandscape) {
-            showLandTheCard(completionNote);
+            showLandTheCard(getNote(completionNote));
         }
     }
 
-    private Content newNote(int index) {
+    private void setNotesArray() {
+        if (notesArray.size() > 0) {
+            notesArray.clear();
+        }
+        String[] notes = getResources().getStringArray(R.array.tags);
+        for (int i = 0; i < notes.length; i++) {
+            notesArray.add(createNote(i));
+        }
+    }
+
+    private Note createNote(int index) {
         Resources res = getResources();
-        return new Content(res.getStringArray(R.array.tags)[index],
-                res.getStringArray(R.array.date)[index], res.getStringArray(R.array.tags)[index],
-                res.getIntArray(R.array.key)[index], res.getStringArray(R.array.related_cards)[index],
+        Note note = new Note(res.getStringArray(R.array.title)[index],
+                res.getStringArray(R.array.tags)[index],
+                res.getIntArray(R.array.key)[index],
+                Long.parseLong(res.getStringArray(R.array.date)[index]),
+                res.getIntArray(R.array.related_cards)[index],
                 res.getStringArray(R.array.text)[index]);
+        return note;
+    }
+
+    private Note getNote(int position) {
+        return notesArray.get(position);
     }
 
     private void initList(View view) {
-        LinearLayout layoutView = (LinearLayout) view;
-        String[] tags = getResources().getStringArray(R.array.tags);
-        for (int i = 0; i < tags.length; i++) {
-            String tag = tags[i];
-            Context context = getContext();
-            if (context != null) {
-                TextView textView = new TextView(context);
-                textView.setText(tag);
-                layoutView.addView(textView);
-                final int fi = i;
-                textView.setOnClickListener(v -> {
-                    completionNote = newNote(fi);
-                    showTheCard(completionNote);
-                });
-            }
-        }
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(notesArray);
+        recyclerViewAdapter.setOnItemClickListener(position -> showTheCard(getNote(position)));
+        recyclerView.setAdapter(recyclerViewAdapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 
-    private void showTheCard(Content completionNote) {
+    private void showTheCard(Note completionNote) {
         if (isLandscape) {
             showLandTheCard(completionNote);
         } else {
@@ -92,25 +99,18 @@ public class FirstFragment extends Fragment {
         }
     }
 
-    private void showLandTheCard(Content completionNote) {
+    private void showLandTheCard(Note completionNote) {
         // Создаём новый фрагмент с текущей позицией
         SecondFragment secondFragment = SecondFragment.newInstance(completionNote);
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.second_zettelkasten, secondFragment);
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransaction.commit();
-
+        FragmentHandler.replaceFragment(requireActivity(), secondFragment, R.id.second_zettelkasten, false);
     }
 
-    private void showPortTheCard(Content completionNote) {
+    private void showPortTheCard(Note completionNote) {
         // Откроем вторую activity
         Context context = getContext();
         if (context != null) {
-            Intent intent = new Intent(context, SecondActivity.class);
-            // и передадим туда параметры
-            intent.putExtra(SecondFragment.ARG_SECOND_NOTE, completionNote);
-            startActivity(intent);
+            SecondFragment detail = SecondFragment.newInstance(completionNote);
+            FragmentHandler.replaceFragment(requireActivity(), detail, R.id.root_of_note, true);
         }
     }
 }
