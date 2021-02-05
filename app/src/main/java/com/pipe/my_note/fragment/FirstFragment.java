@@ -34,6 +34,7 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_first, container, false);
     }
     @Override
@@ -119,8 +120,8 @@ public class FirstFragment extends Fragment {
         // Откроем вторую activity
         Context context = getContext();
         if (context != null) {
-            SecondFragment detail = SecondFragment.newInstance(completionNote);
-            FragmentHandler.replaceFragment(requireActivity(), detail, R.id.root_of_note, true, false);
+            SecondFragment secondFragment = SecondFragment.newInstance(completionNote);
+            FragmentHandler.replaceFragment(requireActivity(), secondFragment, R.id.root_of_note, true, false);
         }
     }
 }
