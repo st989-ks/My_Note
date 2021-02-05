@@ -7,9 +7,9 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="created">xx.xx.xx</string>
-    <string name="nameCart">Name</string>
+    <string name="nameCart">Name title</string>
     <string name="tags">#tag</string>
-    <string name="key">xxxxxx</string>
+    <string name="key">Key card</string>
     <string name="text">Text card</string>
     <string name="link_card">Link card</string>
     <string name="hello_first_fragment">Hello first fragment</string>
@@ -22,4 +22,12 @@
     <string name="close_nav_drawer">close_nav_drawer</string>
     <string name="settings_fragment">Настройки</string>
     <string name="fragment_about">О приложении</string>
+    <string name="menu_add_a_note">Add a note</string>
+    <string name="menu_delete_a_note">Delete a note</string>
+    <string name="to_make_changes">to make changes</string>
+    <string name="title_card">Title</string>
+    <string name="tag_card">Tag</string>
+    <string name="date_card">Date</string>
+    <string name="button_cancel">cancel</string>
+    <string name="button_save">save</string>
 </resources>

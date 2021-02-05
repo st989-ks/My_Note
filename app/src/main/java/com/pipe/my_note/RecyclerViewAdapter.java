@@ -6,24 +6,38 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.pipe.my_note.source.Note;
+import com.pipe.my_note.source.NoteSource;
 
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    private ArrayList<Note> dataSource;
+    private final Fragment fragment;
     private OnItemClickListener clickListener;
+    private NoteSource dataSource;
+    private int menuPosition;
+
+    public RecyclerViewAdapter(NoteSource dataSource, Fragment fragment) {
+        this.dataSource = dataSource;
+        this.fragment = fragment;
+    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.form_of_records, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.form_of_records,
+                parent,
+                false);
         return new ViewHolder(v);
     }
 
-    public RecyclerViewAdapter(ArrayList<Note> dataSource) {
-        this.dataSource = dataSource;
+    public int getMenuPosition() {
+        return menuPosition;
     }
+
 
     public void setOnItemClickListener(OnItemClickListener clickListener) {
         this.clickListener = clickListener;
@@ -31,7 +45,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.onBind(dataSource.get(position));
+        holder.onBind(dataSource.getNote(position));
     }
 
     @Override
@@ -62,6 +76,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             textViewName.setText(note.getTitle());
             textViewTag.setText(note.getTag());
             textViewDate.setText(note.getFormatDate());
+        }
+        private void registerContextMenu(View view) {
+            if (fragment != null) {
+                view.setOnLongClickListener(v -> {
+                    menuPosition = getLayoutPosition();
+                    return false;
+                });
+                fragment.registerForContextMenu(view);
+            }
         }
     }
 }
