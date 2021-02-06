@@ -1,4 +1,4 @@
-package com.pipe.my_note;
+package com.pipe.my_note.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,14 +7,11 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
+import com.pipe.my_note.R;
+
 public class SettingsFragment extends Fragment {
 
     public SettingsFragment() {
-    }
-
-    public static SettingsFragment newInstance() {
-        SettingsFragment fragment = new SettingsFragment();
-        return fragment;
     }
 
     @Override

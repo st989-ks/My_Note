@@ -1,14 +1,11 @@
-package com.pipe.my_note;
+package com.pipe.my_note.source;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.format.DateFormat;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
-class Note implements Parcelable {
+public class Note implements Parcelable {
     public static final Creator<Note> CREATOR = new Creator<Note>() {
         @Override
         public Note createFromParcel(Parcel in) {
