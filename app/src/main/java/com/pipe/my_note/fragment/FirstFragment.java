@@ -18,8 +18,8 @@ import com.pipe.my_note.MainActivity;
 import com.pipe.my_note.R;
 import com.pipe.my_note.RecyclerViewAdapter;
 import com.pipe.my_note.observe.Publisher;
-import com.pipe.my_note.source.Note;
-import com.pipe.my_note.source.NoteSource;
+import com.pipe.my_note.data.NoteData;
+import com.pipe.my_note.data.NoteSourceImpl;
 
 public class FirstFragment extends Fragment {
 
@@ -27,7 +27,7 @@ public class FirstFragment extends Fragment {
     private boolean isLandscape;
     private int completionNote;
 
-    private NoteSource notesSource;
+    private NoteSourceImpl notesSource;
     private RecyclerViewAdapter recyclerViewAdapter;
     private Publisher publisher;
 
@@ -64,7 +64,7 @@ public class FirstFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        notesSource = new NoteSource(getResources()).init();
+        notesSource = new NoteSourceImpl(getResources()).init();
     }
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -81,8 +81,8 @@ public class FirstFragment extends Fragment {
         }
     }
 
-    private Note getNote(int position) {
-        return notesSource.getNote(position);
+    private NoteData getNote(int position) {
+        return notesSource.getNoteData(position);
     }
 
     private void initList(View view) {
@@ -92,7 +92,7 @@ public class FirstFragment extends Fragment {
             showTheCard(getNote(position));
             completionNote = position;
             publisher.subscribe(note -> {
-                notesSource.updateNote(position, note);
+                notesSource.updateNoteData(position, note);
                 completionNote = position;
                 recyclerViewAdapter.notifyItemChanged(position);
             });
@@ -102,7 +102,7 @@ public class FirstFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
     }
 
-    private void showTheCard(Note completionNote) {
+    private void showTheCard(NoteData completionNote) {
         if (isLandscape) {
             showLandTheCard(completionNote);
         } else {
@@ -110,13 +110,13 @@ public class FirstFragment extends Fragment {
         }
     }
 
-    private void showLandTheCard(Note completionNote) {
+    private void showLandTheCard(NoteData completionNote) {
         // Создаём новый фрагмент с текущей позицией
         SecondFragment secondFragment = SecondFragment.newInstance(completionNote);
         FragmentHandler.replaceFragment(requireActivity(), secondFragment, R.id.second_zettelkasten, false,false);
     }
 
-    private void showPortTheCard(Note completionNote) {
+    private void showPortTheCard(NoteData completionNote) {
         // Откроем вторую activity
         Context context = getContext();
         if (context != null) {

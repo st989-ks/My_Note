@@ -1,20 +1,20 @@
-package com.pipe.my_note.source;
+package com.pipe.my_note.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
 
-public class Note implements Parcelable {
-    public static final Creator<Note> CREATOR = new Creator<Note>() {
+public class NoteData implements Parcelable {
+    public static final Creator<NoteData> CREATOR = new Creator<NoteData>() {
         @Override
-        public Note createFromParcel(Parcel in) {
-            return new Note(in);
+        public NoteData createFromParcel(Parcel in) {
+            return new NoteData(in);
         }
 
         @Override
-        public Note[] newArray(int size) {
-            return new Note[size];
+        public NoteData[] newArray(int size) {
+            return new NoteData[size];
         }
     };
     private String title;
@@ -23,30 +23,34 @@ public class Note implements Parcelable {
     private long created;
     private int linkCard;
     private String text;
+    private boolean like;
 
-    public Note(String title, String tag, int key, long created, int linkCard, String text) {
+    public NoteData(String title, String tag, int key, long created,
+                    int linkCard, String text, boolean like) {
         this.title = title;
         this.tag = tag;
         this.key = key;
         this.created = created;
         this.linkCard = linkCard;
         this.text = text;
+        this.like = like;
     }
 
-    protected Note(Parcel in) {
+    protected NoteData(Parcel in) {
         title = in.readString();
         tag = in.readString();
         key = in.readInt();
         created = in.readLong();
         linkCard = in.readInt();
         text = in.readString();
+        like = in.readByte() != 0;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public Note setTitle(String title) {
+    public NoteData setTitle(String title) {
         this.title = title;
         return this;
     }
@@ -55,7 +59,7 @@ public class Note implements Parcelable {
         return key;
     }
 
-    public Note setKey(int key) {
+    public NoteData setKey(int key) {
         this.key = key;
         return this;
     }
@@ -64,7 +68,7 @@ public class Note implements Parcelable {
         return created;
     }
 
-    public Note setCreated(long created) {
+    public NoteData setCreated(long created) {
         this.created = created;
         return this;
     }
@@ -73,7 +77,7 @@ public class Note implements Parcelable {
         return linkCard;
     }
 
-    public Note setLinkCard(int linkCard) {
+    public NoteData setLinkCard(int linkCard) {
         this.linkCard = linkCard;
         return this;
     }
@@ -82,7 +86,7 @@ public class Note implements Parcelable {
         return text;
     }
 
-    public Note setText(String text) {
+    public NoteData setText(String text) {
         this.text = text;
         return this;
     }
@@ -93,6 +97,14 @@ public class Note implements Parcelable {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public boolean like() {
+        return like;
+    }
+
+    public void like(boolean important) {
+        like = important;
     }
 
     public String getFormatDate() {
@@ -115,5 +127,6 @@ public class Note implements Parcelable {
         dest.writeLong(created);
         dest.writeInt(linkCard);
         dest.writeString(text);
+        dest.writeByte((byte) (like ? 1 : 0));
     }
 }

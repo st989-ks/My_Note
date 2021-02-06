@@ -9,18 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pipe.my_note.source.Note;
-import com.pipe.my_note.source.NoteSource;
-
-import java.util.ArrayList;
+import com.pipe.my_note.data.NoteData;
+import com.pipe.my_note.data.NoteSourceImpl;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private final Fragment fragment;
     private OnItemClickListener clickListener;
-    private NoteSource dataSource;
+    private NoteSourceImpl dataSource;
     private int menuPosition;
 
-    public RecyclerViewAdapter(NoteSource dataSource, Fragment fragment) {
+    public RecyclerViewAdapter(NoteSourceImpl dataSource, Fragment fragment) {
         this.dataSource = dataSource;
         this.fragment = fragment;
     }
@@ -45,7 +43,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.onBind(dataSource.getNote(position));
+        holder.onBind(dataSource.getNoteData(position));
     }
 
     @Override
@@ -72,7 +70,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             });
         }
 
-        public void onBind(Note note) {
+        public void onBind(NoteData note) {
             textViewName.setText(note.getTitle());
             textViewTag.setText(note.getTag());
             textViewDate.setText(note.getFormatDate());

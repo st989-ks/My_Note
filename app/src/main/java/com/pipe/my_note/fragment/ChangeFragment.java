@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -18,7 +19,7 @@ import com.pipe.my_note.FragmentHandler;
 import com.pipe.my_note.MainActivity;
 import com.pipe.my_note.R;
 import com.pipe.my_note.observe.Publisher;
-import com.pipe.my_note.source.Note;
+import com.pipe.my_note.data.NoteData;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,10 +34,11 @@ public class ChangeFragment extends Fragment {
     private TextView tvKey;
     private EditText etLinkCard;
     private EditText etText;
-    private Note note;
+    private NoteData note;
+    private CheckBox like;
     private long nowDay;
 
-    public static ChangeFragment newInstance(Note note) {
+    public static ChangeFragment newInstance(NoteData note) {
         ChangeFragment f = new ChangeFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_SECOND_NOTE, note);
@@ -74,7 +76,7 @@ public class ChangeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment__change, container, false);
+        View view = inflater.inflate(R.layout.fragment_change, container, false);
         setHasOptionsMenu(true);
         initView(view);
         if (note != null) {
@@ -122,14 +124,14 @@ public class ChangeFragment extends Fragment {
         buttonCancel.setOnClickListener(v -> FragmentHandler.popBackStack(requireActivity()));
     }
 
-    private Note collectNote() {
+    private NoteData collectNote() {
         String title = this.etName.getText().toString();
         String tag = this.etTags.getText().toString();
         int key = Integer.parseInt(this.tvKey.getText().toString());
         long created = nowDay;
         int linkCard = linkCardNote();
         String text = this.etText.getText().toString();
-        return new Note(title, tag, key, created, linkCard, text);
+        return new NoteData(title, tag, key, created, linkCard, text, false);
     }
 
     private void setDateTextView(long dateUT) {

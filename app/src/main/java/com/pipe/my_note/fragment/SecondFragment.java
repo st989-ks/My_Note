@@ -8,18 +8,16 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
-import com.pipe.my_note.FragmentHandler;
 import com.pipe.my_note.R;
-import com.pipe.my_note.source.Note;
+import com.pipe.my_note.data.NoteData;
 
 public class SecondFragment extends Fragment {
 
     static final String ARG_SECOND_NOTE = "content";
-    private Note note;
+    private NoteData note;
 
-    public static SecondFragment newInstance(Note content) {
+    public static SecondFragment newInstance(NoteData content) {
 
         SecondFragment f = new SecondFragment();
         Bundle args = new Bundle();
