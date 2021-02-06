@@ -99,11 +99,11 @@ public class NoteData implements Parcelable {
         this.tag = tag;
     }
 
-    public boolean like() {
+    public boolean getLike() {
         return like;
     }
 
-    public void like(boolean important) {
+    public void setLike(boolean important) {
         like = important;
     }
 

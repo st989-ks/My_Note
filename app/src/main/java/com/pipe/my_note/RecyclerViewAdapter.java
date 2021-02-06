@@ -3,6 +3,7 @@ package com.pipe.my_note;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -59,6 +60,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private TextView textViewName;
         private TextView textViewTag;
         private TextView textViewDate;
+        private CheckBox checkBox;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

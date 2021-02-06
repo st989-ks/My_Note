@@ -35,10 +35,7 @@ public class NoteSourceImpl implements NoteSource {
                 resources.getIntArray(R.array.related_cards)[index],
                 resources.getStringArray(R.array.text)[index],
                 like);
-
         return note;
-
-
     }
 
     @Override
