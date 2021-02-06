@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initView();
         FragmentHandler.replaceFragment(MainActivity.this, new FirstFragment(),
-                R.id.root_of_note,false, true);
+                R.id.root_of_note, false, true);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     FragmentHandler.replaceFragment(MainActivity.this,
                             new SettingsFragment(),
                             FragmentHandler.getIdFromOrientation(MainActivity.this),
-                            true,false);
+                            true, false);
                     drawer.closeDrawer(GravityCompat.START);
                     getName(String.format("%s", "menu_settings"));
                     return true;
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                     FragmentHandler.replaceFragment(MainActivity.this,
                             new AboutFragment(),
                             FragmentHandler.getIdFromOrientation(MainActivity.this),
-                            true,false);
+                            true, false);
                     drawer.closeDrawer(GravityCompat.START);
                     getName(String.format("%s", "menu_about"));
                     return true;
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                     FragmentHandler.replaceFragment(MainActivity.this,
                             new ChangeFragment(),
                             FragmentHandler.getIdFromOrientation(MainActivity.this),
-                            true,false);
+                            true, false);
                     drawer.closeDrawer(GravityCompat.START);
                     getName(String.format("%s", "menu_add_a_note"));
                     return true;
@@ -129,21 +129,21 @@ public class MainActivity extends AppCompatActivity {
                 FragmentHandler.replaceFragment(MainActivity.this,
                         new AboutFragment(),
                         FragmentHandler.getIdFromOrientation(MainActivity.this),
-                        true,false);
+                        true, false);
                 getName(String.format("%s", "menu_about"));
                 return true;
             case R.id.menu_settings:
                 FragmentHandler.replaceFragment(MainActivity.this,
                         new SettingsFragment(),
                         FragmentHandler.getIdFromOrientation(MainActivity.this),
-                        true,false);
+                        true, false);
                 getName(String.format("%s", "menu_settings"));
                 return true;
             case R.id.menu_add_a_note:
                 FragmentHandler.replaceFragment(MainActivity.this,
                         new ChangeFragment(),
                         FragmentHandler.getIdFromOrientation(MainActivity.this),
-                        true,false);
+                        true, false);
                 getName(String.format("%s", "menu_add_a_note"));
                 return true;
             case R.id.menu_delete_a_note:
