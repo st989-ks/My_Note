@@ -45,6 +45,10 @@ public class ChangeFragment extends Fragment {
         f.setArguments(args);
         return f;
     }
+    public static ChangeFragment newInstance() {
+        ChangeFragment fragment = new ChangeFragment();
+        return fragment;
+    }
 
 //    @Override
 //    public void onAttach(@NonNull Context context) {

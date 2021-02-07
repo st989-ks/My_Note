@@ -7,8 +7,8 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -32,7 +32,7 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
 
     private static final String ARG_INDEX = "CompletionNote";
     private boolean isLandscape;
-    private int completionNote;
+    private int completionNote = 0;
 
     private NoteSource notesSource;
     private RecyclerViewAdapter adapter;
@@ -142,16 +142,28 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
 
     private void showLandTheCard(NoteData completionNote) {
         // Создаём новый фрагмент с текущей позицией
-        SecondFragment secondFragment = SecondFragment.newInstance(completionNote);
-        FragmentHandler.replaceFragment(requireActivity(), secondFragment, R.id.second_zettelkasten, false, false);
+        Fragment fragment;
+        if (completionNote == null) {
+            fragment = ChangeFragment.newInstance();
+        } else {
+            fragment = SecondFragment.newInstance(completionNote);
+        }
+        FragmentHandler.replaceFragment(requireActivity(), fragment,
+                R.id.second_zettelkasten, false, false);
     }
 
     private void showPortTheCard(NoteData completionNote) {
         // Откроем вторую activity
         Context context = getContext();
+        Fragment fragment;
         if (context != null) {
-            SecondFragment secondFragment = SecondFragment.newInstance(completionNote);
-            FragmentHandler.replaceFragment(requireActivity(), secondFragment, R.id.root_of_note, true, false);
+            if (completionNote == null) {
+                fragment = ChangeFragment.newInstance();
+            } else {
+                fragment = SecondFragment.newInstance(completionNote);
+            }
+            FragmentHandler.replaceFragment(requireActivity(), fragment,
+                    R.id.root_of_note, true, false);
         }
     }
 
@@ -197,6 +209,12 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
 //                        new ChangeFragment(),
 //                        FragmentHandler.getIdFromOrientation(MainActivity.this),
 //                        true, false);
+                showTheCard(null);
+                publisher.subscribe(note -> {
+                    notesSource.addNoteData(note);
+                    completionNote = notesSource.size() - 1;
+                    adapter.notifyItemInserted(completionNote);
+                });
                 Log.i(MainActivity.TAG, this.getClass().getSimpleName() +
                         " -onOptionsItemSelected" + " -menu_add_a_note");
                 return true;

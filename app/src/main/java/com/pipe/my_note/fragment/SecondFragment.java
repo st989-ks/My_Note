@@ -1,21 +1,43 @@
 package com.pipe.my_note.fragment;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.pipe.my_note.MainActivity;
 import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
+import com.pipe.my_note.data.NoteSource;
+import com.pipe.my_note.observe.Publisher;
+import com.pipe.my_note.ui.FragmentHandler;
+import com.pipe.my_note.ui.RecyclerViewAdapter;
+
+import java.util.Calendar;
 
 public class SecondFragment extends Fragment {
 
     static final String ARG_SECOND_NOTE = "content";
     private NoteData note;
+    TextView tvName;
+    TextView tvCreated;
+    TextView tvTags;
+    TextView tvKey;
+    TextView tvLinkCard;
+    TextView tvText;
+    private boolean isLandscape;
+    private Publisher publisher;
+    private NoteSource notesSource;
+    private int completionNote = 0;
+    private RecyclerViewAdapter adapter;
 
     public static SecondFragment newInstance(NoteData content) {
 
@@ -24,6 +46,19 @@ public class SecondFragment extends Fragment {
         args.putParcelable(ARG_SECOND_NOTE, content);
         f.setArguments(args);
         return f;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        MainActivity activity = (MainActivity) context;
+        publisher = activity.getPublisher();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        publisher = null;
     }
 
     @Override
@@ -38,26 +73,74 @@ public class SecondFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_second, container, false);
-        TextView tvName = view.findViewById(R.id.zettelkasten_name);
-        tvName.setText(note.getTitle());
-        TextView tvCreated = view.findViewById(R.id.zettelkasten_created);
-        tvCreated.setText(note.getFormatDate());
-        TextView tvTags = view.findViewById(R.id.zettelkasten_tags);
-        tvTags.setText(note.getTag());
-        TextView tvKey = view.findViewById(R.id.zettelkasten_key);
-        tvKey.setText(Integer.toString((note.getKey())));
-        TextView tvLinkCard = view.findViewById(R.id.zettelkasten_link_card);
-        tvLinkCard.setText(Integer.toString((note.getLinkCard())));
-        TextView tvText = view.findViewById(R.id.zettelkasten_text);
-        tvText.setText(note.getText());
-        Button buttonCancel = view.findViewById(R.id.button_change);
-//        buttonCancel.setOnClickListener(v -> {
-//            FragmentHandler.replaceFragment(,
-//                    new ChangeFragment(),
-//                    FragmentHandler.getIdFromOrientation(),
-//                    true);
-//            FragmentHandler.popBackStack(requireActivity());
-//        });
+        initView(view);
+//        if (note != null) {
+//            populateView();
+//        }
         return view;
     }
+    private void initView(View view) {
+        tvName = view.findViewById(R.id.zettelkasten_name);
+        tvCreated = view.findViewById(R.id.zettelkasten_created);
+        tvTags = view.findViewById(R.id.zettelkasten_tags);
+        tvKey = view.findViewById(R.id.zettelkasten_key);
+        tvLinkCard = view.findViewById(R.id.zettelkasten_link_card);
+        tvText = view.findViewById(R.id.zettelkasten_text);
+        tvName.setText(note.getTitle());
+        tvCreated.setText(note.getFormatDate());
+        tvTags.setText(note.getTag());
+        tvKey.setText(Integer.toString((note.getKey())));
+        tvLinkCard.setText(Integer.toString((note.getLinkCard())));
+        tvText.setText(note.getText());
+        Button buttonCancel = view.findViewById(R.id.button_change);
+        buttonCancel.setOnClickListener(v -> {
+            showTheCard(note);
+            publisher.subscribe(note -> {
+                notesSource.addNoteData(note);
+                completionNote = notesSource.size() - 1;
+                adapter.notifyItemInserted(completionNote);
+            });
+            Log.i(MainActivity.TAG, this.getClass().getSimpleName() +
+                    " -initView" + " -buttonCancel.setOnClickListener");
+        });
+    }
+    private void showTheCard(NoteData completionNote) {
+        if (isLandscape) {
+            showLandTheCard(completionNote);
+        } else {
+            showPortTheCard(completionNote);
+        }
+    }
+    private void showLandTheCard(NoteData completionNote) {
+        // Создаём новый фрагмент с текущей позицией
+        Fragment fragment;
+        if (completionNote == null) {
+            fragment = ChangeFragment.newInstance();
+        } else {
+            fragment = ChangeFragment.newInstance(completionNote);
+        }
+        FragmentHandler.replaceFragment(requireActivity(), fragment,
+                R.id.second_zettelkasten, false, false);
+    }
+
+    private void showPortTheCard(NoteData completionNote) {
+        // Откроем вторую activity
+        Context context = getContext();
+        Fragment fragment;
+        if (context != null) {
+            if (completionNote == null) {
+                fragment = ChangeFragment.newInstance();
+            } else {
+                fragment = ChangeFragment.newInstance(completionNote);
+            }
+            FragmentHandler.replaceFragment(requireActivity(), fragment,
+                    R.id.root_of_note, true, false);
+        }
+    }
+//    private void populateView() {
+//        etName.setText(note.getName());
+//        setDateTextView(note.getCreationDateUnixTime());
+//        etDescription.setText(note.getDescription());
+//        etContent.setText(note.getContent());
+//    }
 }
