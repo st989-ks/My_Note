@@ -1,4 +1,4 @@
-package com.pipe.my_note;
+package com.pipe.my_note.ui;
 
 import android.content.res.Configuration;
 
@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.pipe.my_note.R;
 import com.pipe.my_note.fragment.SecondFragment;
 
 public abstract class FragmentHandler {
@@ -29,7 +30,7 @@ public abstract class FragmentHandler {
         fragmentTransaction.commitAllowingStateLoss();
     }
 
-    static int getIdFromOrientation(FragmentActivity activity) {
+    public static int getIdFromOrientation(FragmentActivity activity) {
         Boolean isLandscape = activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         if (isLandscape) {
             return R.id.second_zettelkasten;

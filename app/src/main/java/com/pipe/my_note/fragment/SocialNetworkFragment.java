@@ -1,4 +1,4 @@
-package com.pipe.my_note.ui;
+package com.pipe.my_note.fragment;
 
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -21,6 +21,8 @@ import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
 import com.pipe.my_note.data.NoteSourceImpl;
+import com.pipe.my_note.ui.OnRegisterMenu;
+import com.pipe.my_note.ui.SocialNetworkAdapter;
 
 import java.util.Date;
 
@@ -96,7 +98,7 @@ public class SocialNetworkFragment extends Fragment implements OnRegisterMenu {
                                 data.getNoteData(position).getCreated(),
                                 data.getNoteData(position).getLinkCard(),
                                 data.getNoteData(position).getText(),
-                                data.getNoteData(position).like()));
+                                data.getNoteData(position).getLike()));
                 adapter.notifyItemChanged(position);
                 //adapter.notifyDataSetChanged();
                 return true;

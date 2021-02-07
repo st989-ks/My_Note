@@ -2,6 +2,7 @@ package com.pipe.my_note;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -20,8 +21,11 @@ import com.pipe.my_note.fragment.ChangeFragment;
 import com.pipe.my_note.fragment.FirstFragment;
 import com.pipe.my_note.fragment.SettingsFragment;
 import com.pipe.my_note.observe.Publisher;
+import com.pipe.my_note.ui.FragmentHandler;
 
 public class MainActivity extends AppCompatActivity {
+
+    public final static String TAG = " Мое сообщение ";
     private final Publisher publisher = new Publisher();
 
     @Override
@@ -31,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
         FragmentHandler.replaceFragment(MainActivity.this, new FirstFragment(),
                 R.id.root_of_note, false, true);
+        Log.i(TAG, this.getClass().getSimpleName()+" -onCreate");
     }
 
     @Override
@@ -42,31 +47,31 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT).show();
+                Log.i(TAG, this.getClass().getSimpleName()+" -onQueryTextSubmit");
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                Log.i(TAG, this.getClass().getSimpleName()+" -onQueryTextChange");
                 return true;
             }
         });
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        Log.i(TAG, this.getClass().getSimpleName()+" -onCreateOptionsMenu");
         return true;
     }
 
     private void initView() {
         Toolbar toolbar = initToolBar();
         initDrawer(toolbar);
+        Log.i(TAG, this.getClass().getSimpleName()+" -initView");
     }
 
     private Toolbar initToolBar() {
-
-        class Local {
-        }
-        getName(Local.class.getEnclosingMethod().getName());
-
         Toolbar toolbar = findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+        Log.i(TAG, this.getClass().getSimpleName()+" -initToolBar");
         return toolbar;
     }
 
@@ -88,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                             FragmentHandler.getIdFromOrientation(MainActivity.this),
                             true, false);
                     drawer.closeDrawer(GravityCompat.START);
-                    getName(String.format("%s", "menu_settings"));
+                    Log.i(TAG, this.getClass().getSimpleName()+" -initDrawer"+" -menu_settings");
                     return true;
                 case R.id.menu_about:
                     FragmentHandler.replaceFragment(MainActivity.this,
@@ -96,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                             FragmentHandler.getIdFromOrientation(MainActivity.this),
                             true, false);
                     drawer.closeDrawer(GravityCompat.START);
-                    getName(String.format("%s", "menu_about"));
+                    Log.i(TAG, this.getClass().getSimpleName()+" -initDrawer"+" -menu_about");
                     return true;
                 case R.id.menu_add_a_note:
                     FragmentHandler.replaceFragment(MainActivity.this,
@@ -104,23 +109,19 @@ public class MainActivity extends AppCompatActivity {
                             FragmentHandler.getIdFromOrientation(MainActivity.this),
                             true, false);
                     drawer.closeDrawer(GravityCompat.START);
-                    getName(String.format("%s", "menu_add_a_note"));
+                    Log.i(TAG, this.getClass().getSimpleName()+" -initDrawer"+" -menu_add_a_note");
                     return true;
                 case R.id.menu_delete_a_note:
                     drawer.closeDrawer(GravityCompat.START);
-                    getName(String.format("%s", "menu_delete_a_note"));
+                    Log.i(TAG, this.getClass().getSimpleName()+" -initDrawer"+" -menu_delete_a_note");
                     return true;
             }
+            Log.i(TAG, this.getClass().getSimpleName()+" -initDrawer"+" -false");
             return false;
         });
 
     }
 
-    public void getName(String text) {
-        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
-    }
-
-    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -130,30 +131,32 @@ public class MainActivity extends AppCompatActivity {
                         new AboutFragment(),
                         FragmentHandler.getIdFromOrientation(MainActivity.this),
                         true, false);
-                getName(String.format("%s", "menu_about"));
+                Log.i(TAG, this.getClass().getSimpleName()+" -onOptionsItemSelected"+" -menu_about");
                 return true;
             case R.id.menu_settings:
                 FragmentHandler.replaceFragment(MainActivity.this,
                         new SettingsFragment(),
                         FragmentHandler.getIdFromOrientation(MainActivity.this),
                         true, false);
-                getName(String.format("%s", "menu_settings"));
+                Log.i(TAG, this.getClass().getSimpleName()+" -onOptionsItemSelected"+" -menu_settings");
                 return true;
             case R.id.menu_add_a_note:
                 FragmentHandler.replaceFragment(MainActivity.this,
                         new ChangeFragment(),
                         FragmentHandler.getIdFromOrientation(MainActivity.this),
                         true, false);
-                getName(String.format("%s", "menu_add_a_note"));
+                Log.i(TAG, this.getClass().getSimpleName()+" -onOptionsItemSelected"+" -menu_add_a_note");
                 return true;
             case R.id.menu_delete_a_note:
-                getName(String.format("%s", "menu_delete_a_note"));
+                Log.i(TAG, this.getClass().getSimpleName()+" -onOptionsItemSelected"+" -menu_delete_a_note");
                 return true;
         }
+        Log.i(TAG, this.getClass().getSimpleName()+" -onOptionsItemSelected");
         return super.onOptionsItemSelected(item);
     }
 
     public Publisher getPublisher() {
+        Log.i(TAG, this.getClass().getSimpleName()+" -getPublisher");
         return publisher;
     }
 }

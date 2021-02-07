@@ -15,7 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.pipe.my_note.FragmentHandler;
+import com.pipe.my_note.ui.FragmentHandler;
 import com.pipe.my_note.MainActivity;
 import com.pipe.my_note.R;
 import com.pipe.my_note.observe.Publisher;

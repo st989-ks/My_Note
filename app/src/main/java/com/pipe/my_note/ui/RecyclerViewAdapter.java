@@ -1,5 +1,6 @@
-package com.pipe.my_note;
+package com.pipe.my_note.ui;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,26 +11,29 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.pipe.my_note.MainActivity;
+import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
-import com.pipe.my_note.data.NoteSourceImpl;
+import com.pipe.my_note.data.NoteSource;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private final Fragment fragment;
+    private final NoteSource dataSource;
     private OnItemClickListener clickListener;
-    private NoteSourceImpl dataSource;
     private int menuPosition;
 
-    public RecyclerViewAdapter(NoteSourceImpl dataSource, Fragment fragment) {
+    public RecyclerViewAdapter(NoteSource dataSource, Fragment fragment) {
         this.dataSource = dataSource;
         this.fragment = fragment;
+        Log.i(MainActivity.TAG, this.getClass().getSimpleName() + " -RecyclerViewAdapter");
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.form_of_records,
-                parent,
-                false);
+                parent, false);
+        Log.i(MainActivity.TAG, this.getClass().getSimpleName() + " -onCreateViewHolder");
         return new ViewHolder(v);
     }
 
@@ -40,44 +44,59 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public void setOnItemClickListener(OnItemClickListener clickListener) {
         this.clickListener = clickListener;
+        Log.i(MainActivity.TAG, this.getClass().getSimpleName() + " -setOnItemClickListener");
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.onBind(dataSource.getNoteData(position));
+        Log.i(MainActivity.TAG, this.getClass().getSimpleName() + " -onBindViewHolder");
     }
 
     @Override
     public int getItemCount() {
+        Log.i(MainActivity.TAG, this.getClass().getSimpleName() + " -getItemCount");
         return dataSource.size();
     }
 
     public interface OnItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(View view, int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView textViewName;
-        private TextView textViewTag;
-        private TextView textViewDate;
-        private CheckBox checkBox;
+        private final TextView textViewName;
+        private final TextView textViewTag;
+        private final TextView textViewDate;
+        private final CheckBox checkBox;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewName = itemView.findViewById(R.id.name_title);
             textViewTag = itemView.findViewById(R.id.tag_title);
             textViewDate = itemView.findViewById(R.id.date_title);
+            checkBox = itemView.findViewById(R.id.check_box);
             itemView.setOnClickListener(v -> {
-                clickListener.onItemClick(getAdapterPosition());
+                if (clickListener != null) {
+                clickListener.onItemClick(v, getAdapterPosition());
+                }
             });
+            itemView.setOnLongClickListener(v -> {
+                menuPosition = getLayoutPosition();
+                itemView.showContextMenu(10, 10);
+                return true;
+            });
+            Log.i(MainActivity.TAG, this.getClass().getSimpleName() + " -ViewHolder");
         }
 
-        public void onBind(NoteData note) {
-            textViewName.setText(note.getTitle());
-            textViewTag.setText(note.getTag());
-            textViewDate.setText(note.getFormatDate());
+        public void onBind(NoteData noteData) {
+            textViewName.setText(noteData.getTitle());
+            textViewTag.setText(noteData.getTag());
+            textViewDate.setText(noteData.getFormatDate());
+            checkBox.setChecked(noteData.getLike());
+            Log.i(MainActivity.TAG, this.getClass().getSimpleName() + " -onBind");
         }
-        private void registerContextMenu(View view) {
+
+        private void registerContextMenu(@NonNull View view) {
             if (fragment != null) {
                 view.setOnLongClickListener(v -> {
                     menuPosition = getLayoutPosition();
@@ -85,6 +104,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 });
                 fragment.registerForContextMenu(view);
             }
+            Log.i(MainActivity.TAG, this.getClass().getSimpleName() + " -registerContextMenu");
         }
     }
 }
