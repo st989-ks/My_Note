@@ -3,7 +3,12 @@ package com.pipe.my_note.fragment;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -32,13 +37,13 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
     private NoteSource notesSource;
     private RecyclerViewAdapter adapter;
     private Publisher publisher;
-    private RecyclerView recyclerView;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first, container, false);
-        initView(view);
+//        initView(view);
         setHasOptionsMenu(true);
         return view;
     }
@@ -56,12 +61,12 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
         publisher = null;
     }
 
-    private void initView(View view) {
-        recyclerView = view.findViewById(R.id.recycler_view);
-        // Получим источник данных для списка
-        notesSource = new NoteSourceImpl(getResources()).init();
-        initRecyclerView();
-    }
+//    private void initView(View view) {
+//        recyclerView = view.findViewById(R.id.recycler_view);
+//        // Получим источник данных для списка
+//        notesSource = new NoteSourceImpl(getResources()).init();
+//        initRecyclerView();
+//    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -69,11 +74,11 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
         super.onSaveInstanceState(outState);
     }
 
-//    @Override
-//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//        initList(view);
-//    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initRecyclerView(view);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,13 +89,16 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         isLandscape = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
+
         if (savedInstanceState != null) {
             completionNote = savedInstanceState.getInt(ARG_INDEX);
         } else {
             completionNote = 0;
         }
+
         if (isLandscape) {
             showLandTheCard(getNote(completionNote));
         }
@@ -100,12 +108,17 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
         return notesSource.getNoteData(position);
     }
 
-    private void initRecyclerView() {
-
+    private void initRecyclerView(View view) {
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new RecyclerViewAdapter(notesSource, this);
+
+//        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+//        itemDecoration.setDrawable(getResources().getDrawable(R.drawable.separator, null));
+//        recyclerView.addItemDecoration(itemDecoration);
 
         adapter.setOnItemClickListener((v, position) -> {
             FirstFragment.this.showTheCard(FirstFragment.this.getNote(position));
@@ -117,8 +130,6 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
             });
         });
         recyclerView.setAdapter(adapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     private void showTheCard(NoteData completionNote) {
@@ -148,4 +159,54 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
     public void onRegister(View view) {
         registerForContextMenu(view);
     }
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater menuInflater = requireActivity().getMenuInflater();
+        menuInflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.menu_about:
+//                FragmentHandler.replaceFragment(this,
+//                        new AboutFragment(),
+//                        FragmentHandler.getIdFromOrientation(this),
+//                        true, false);
+                Log.i(MainActivity.TAG, this.getClass().getSimpleName() +
+                        " -onOptionsItemSelected" + " -menu_about");
+                return true;
+            case R.id.menu_settings:
+//                FragmentHandler.replaceFragment(MainActivity.this,
+//                        new SettingsFragment(),
+//                        FragmentHandler.getIdFromOrientation(MainActivity.this),
+//                        true, false);
+                Log.i(MainActivity.TAG, this.getClass().getSimpleName() +
+                        " -onOptionsItemSelected" + " -menu_settings");
+                return true;
+            case R.id.menu_add_a_note:
+//                FragmentHandler.replaceFragment(MainActivity.this,
+//                        new ChangeFragment(),
+//                        FragmentHandler.getIdFromOrientation(MainActivity.this),
+//                        true, false);
+                Log.i(MainActivity.TAG, this.getClass().getSimpleName() +
+                        " -onOptionsItemSelected" + " -menu_add_a_note");
+                return true;
+            case R.id.menu_delete_a_note:
+                Log.i(MainActivity.TAG, this.getClass().getSimpleName() +
+                        " -onOptionsItemSelected" + " -menu_delete_a_note");
+                return true;
+        }
+        Log.i(MainActivity.TAG, this.getClass().getSimpleName() + " -onOptionsItemSelected");
+        return super.onOptionsItemSelected(item);
+    }
+
 }

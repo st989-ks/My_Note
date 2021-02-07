@@ -46,12 +46,12 @@ public class ChangeFragment extends Fragment {
         return f;
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        MainActivity activity = (MainActivity) context;
-        publisher = activity.getPublisher();
-    }
+//    @Override
+//    public void onAttach(@NonNull Context context) {
+//        super.onAttach(context);
+//        MainActivity activity = (MainActivity) context;
+//        publisher = activity.getPublisher();
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
