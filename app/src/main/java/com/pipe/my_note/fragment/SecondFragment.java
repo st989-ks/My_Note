@@ -1,7 +1,7 @@
 package com.pipe.my_note.fragment;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,39 +11,39 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.pipe.my_note.MainActivity;
 import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
+import com.pipe.my_note.data.NoteSourceImpl;
 import com.pipe.my_note.observe.Publisher;
+import com.pipe.my_note.ui.Constant;
 import com.pipe.my_note.ui.FragmentHandler;
 import com.pipe.my_note.ui.RecyclerViewAdapter;
 
-import java.util.Calendar;
-
 public class SecondFragment extends Fragment {
 
-    static final String ARG_SECOND_NOTE = "content";
-    private NoteData note;
     TextView tvName;
     TextView tvCreated;
     TextView tvTags;
     TextView tvKey;
     TextView tvLinkCard;
     TextView tvText;
+    private NoteData note;
     private boolean isLandscape;
     private Publisher publisher;
     private NoteSource notesSource;
-    private int completionNote = 0;
+    private int completionNote;
     private RecyclerViewAdapter adapter;
 
     public static SecondFragment newInstance(NoteData content) {
 
         SecondFragment f = new SecondFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_SECOND_NOTE, content);
+        args.putParcelable(Constant.ARG_SECOND_NOTE, content);
         f.setArguments(args);
         return f;
     }
@@ -65,8 +65,10 @@ public class SecondFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            note = getArguments().getParcelable(ARG_SECOND_NOTE);
+            note = getArguments().getParcelable(Constant.ARG_SECOND_NOTE);
         }
+        isLandscape = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
@@ -74,11 +76,12 @@ public class SecondFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_second, container, false);
         initView(view);
-//        if (note != null) {
-//            populateView();
+//        if (isLandscape) {
+//            showLandTheCard(getNote(completionNote));
 //        }
         return view;
     }
+
     private void initView(View view) {
         tvName = view.findViewById(R.id.zettelkasten_name);
         tvCreated = view.findViewById(R.id.zettelkasten_created);
@@ -104,6 +107,7 @@ public class SecondFragment extends Fragment {
                     " -initView" + " -buttonCancel.setOnClickListener");
         });
     }
+
     private void showTheCard(NoteData completionNote) {
         if (isLandscape) {
             showLandTheCard(completionNote);
@@ -111,14 +115,11 @@ public class SecondFragment extends Fragment {
             showPortTheCard(completionNote);
         }
     }
+
     private void showLandTheCard(NoteData completionNote) {
         // Создаём новый фрагмент с текущей позицией
         Fragment fragment;
-        if (completionNote == null) {
-            fragment = ChangeFragment.newInstance();
-        } else {
-            fragment = ChangeFragment.newInstance(completionNote);
-        }
+        fragment = ChangeFragment.newInstance(completionNote);
         FragmentHandler.replaceFragment(requireActivity(), fragment,
                 R.id.second_zettelkasten, false, false);
     }
@@ -128,19 +129,9 @@ public class SecondFragment extends Fragment {
         Context context = getContext();
         Fragment fragment;
         if (context != null) {
-            if (completionNote == null) {
-                fragment = ChangeFragment.newInstance();
-            } else {
-                fragment = ChangeFragment.newInstance(completionNote);
-            }
+            fragment = ChangeFragment.newInstance(completionNote);
             FragmentHandler.replaceFragment(requireActivity(), fragment,
                     R.id.root_of_note, true, false);
         }
     }
-//    private void populateView() {
-//        etName.setText(note.getName());
-//        setDateTextView(note.getCreationDateUnixTime());
-//        etDescription.setText(note.getDescription());
-//        etContent.setText(note.getContent());
-//    }
 }

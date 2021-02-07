@@ -11,6 +11,9 @@ import com.pipe.my_note.R;
 import com.pipe.my_note.fragment.SecondFragment;
 
 public abstract class FragmentHandler {
+
+    private static FragmentManager fragmentManager;
+
     public static void replaceFragment(FragmentActivity activity, Fragment fragment,
                                        int fragmentIdToReplace, boolean addToBackStack,
                                        boolean popUpBeforeReplace) {
@@ -41,6 +44,16 @@ public abstract class FragmentHandler {
     public static void popBackStack(FragmentActivity activity) {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         fragmentManager.popBackStack();
+    }
+    public static void addFragment(Fragment fragment, boolean useBackStack) {
+        // Открыть транзакцию
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        if (useBackStack) {
+            fragmentTransaction.addToBackStack(null);
+        }
+        // Закрыть транзакцию
+        fragmentTransaction.commit();
     }
 }
 

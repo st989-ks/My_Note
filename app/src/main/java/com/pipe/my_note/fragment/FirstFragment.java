@@ -24,14 +24,14 @@ import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
 import com.pipe.my_note.data.NoteSourceImpl;
 import com.pipe.my_note.observe.Publisher;
+import com.pipe.my_note.ui.Constant;
 import com.pipe.my_note.ui.FragmentHandler;
 import com.pipe.my_note.ui.OnRegisterMenu;
 import com.pipe.my_note.ui.RecyclerViewAdapter;
 
 public class FirstFragment extends Fragment implements OnRegisterMenu {
 
-    private static final String ARG_INDEX = "CompletionNote";
-    private boolean isLandscape;
+    public boolean isLandscape;
     private int completionNote = 0;
 
     private NoteSource notesSource;
@@ -43,7 +43,6 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first, container, false);
-//        initView(view);
         setHasOptionsMenu(true);
         return view;
     }
@@ -61,16 +60,9 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
         publisher = null;
     }
 
-//    private void initView(View view) {
-//        recyclerView = view.findViewById(R.id.recycler_view);
-//        // Получим источник данных для списка
-//        notesSource = new NoteSourceImpl(getResources()).init();
-//        initRecyclerView();
-//    }
-
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putInt(ARG_INDEX, completionNote);
+        outState.putInt(Constant.ARG_INDEX, completionNote);
         super.onSaveInstanceState(outState);
     }
 
@@ -94,7 +86,7 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
                 == Configuration.ORIENTATION_LANDSCAPE;
 
         if (savedInstanceState != null) {
-            completionNote = savedInstanceState.getInt(ARG_INDEX);
+            completionNote = savedInstanceState.getInt(Constant.ARG_INDEX);
         } else {
             completionNote = 0;
         }
