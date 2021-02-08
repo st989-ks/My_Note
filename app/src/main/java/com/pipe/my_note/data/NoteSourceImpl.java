@@ -1,25 +1,51 @@
 package com.pipe.my_note.data;
 
 import android.content.res.Resources;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.pipe.my_note.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class NoteSourceImpl implements NoteSource {
-    private final List<NoteData> noteData;
-    private final Resources resources;
+public class NoteSourceImpl implements NoteSource, Parcelable {
+    public static final Creator<NoteSourceImpl> CREATOR = new Creator<NoteSourceImpl>() {
+        @Override
+        public NoteSourceImpl createFromParcel(Parcel in) {
+            return new NoteSourceImpl(in);
+        }
+
+        @Override
+        public NoteSourceImpl[] newArray(int size) {
+            return new NoteSourceImpl[size];
+        }
+    };
+    private final ArrayList<NoteData> notes;
+    private Resources resources;
 
     public NoteSourceImpl(Resources resources) {
-        noteData = new ArrayList<>(3);
         this.resources = resources;
+        notes = new ArrayList<>();
+    }
+
+    protected NoteSourceImpl(Parcel in) {
+        notes = in.createTypedArrayList(NoteData.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(notes);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public NoteSourceImpl init() {
         String[] notesArray = resources.getStringArray(R.array.title);
         for (int i = 0; i < notesArray.length; i++) {
-            noteData.add(createNewNote(i));
+            notes.add(createNewNote(i));
         }
         return this;
     }
@@ -40,31 +66,31 @@ public class NoteSourceImpl implements NoteSource {
 
     @Override
     public NoteData getNoteData(int position) {
-        return noteData.get(position);
+        return notes.get(position);
     }
 
     @Override
     public int size() {
-        return noteData.size();
+        return notes.size();
     }
 
     @Override
     public void addNoteData(NoteData note) {
-        noteData.add(note);
+        notes.add(note);
     }
 
     @Override
     public void updateNoteData(int position, NoteData note) {
-        noteData.set(position, note);
+        notes.set(position, note);
     }
 
     @Override
     public void deleteNoteData(int position) {
-        noteData.remove(position);
+        notes.remove(position);
     }
 
     @Override
     public void clearNoteData() {
-        noteData.clear();
+        notes.clear();
     }
 }

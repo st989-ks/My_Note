@@ -89,7 +89,8 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
     }
 
     @Override
-    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v,
+                                    @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater menuInflater = requireActivity().getMenuInflater();
         menuInflater.inflate(R.menu.menu_main, menu);

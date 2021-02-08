@@ -15,14 +15,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.pipe.my_note.data.NoteSource;
-import com.pipe.my_note.ui.Constant;
-import com.pipe.my_note.ui.Navigation;
 import com.pipe.my_note.MainActivity;
 import com.pipe.my_note.R;
-import com.pipe.my_note.observe.Publisher;
 import com.pipe.my_note.data.NoteData;
-import com.pipe.my_note.ui.RecyclerViewAdapter;
+import com.pipe.my_note.observe.Publisher;
+import com.pipe.my_note.ui.Constant;
+import com.pipe.my_note.ui.Navigation;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,30 +35,22 @@ public class ChangeFragment extends Fragment {
     private EditText etLinkCard;
     private EditText etText;
     private NoteData note;
-    private NoteSource noteSource;
     private CheckBox like;
     private long nowDay;
-    private RecyclerViewAdapter adapter;
 
+    //фрагмент для редактирования данных
     public static ChangeFragment newInstance(NoteData note) {
         ChangeFragment f = new ChangeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(Constant.ARG_NOTE, note);
+        args.putParcelable(Constant.ARG_CHANGE_NOTE, note);
         f.setArguments(args);
         return f;
     }
 
+    //фрагмент для добавления новых данных
     public static ChangeFragment newInstance() {
         ChangeFragment fragment = new ChangeFragment();
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            note = getArguments().getParcelable(Constant.ARG_NOTE);
-        }
     }
 
     @Override
@@ -71,9 +61,11 @@ public class ChangeFragment extends Fragment {
     }
 
     @Override
-    public void onDetach() {
-        publisher = null;
-        super.onDetach();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            note = getArguments().getParcelable(Constant.ARG_CHANGE_NOTE);
+        }
     }
 
     @Override
@@ -86,6 +78,7 @@ public class ChangeFragment extends Fragment {
         } else {
             createNewCardView();
         }
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -94,10 +87,17 @@ public class ChangeFragment extends Fragment {
         super.onStop();
         note = collectNote();
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         publisher.notifySingle(note);
+    }
+
+    @Override
+    public void onDetach() {
+        publisher = null;
+        super.onDetach();
     }
 
     private NoteData collectNote() {
@@ -118,8 +118,6 @@ public class ChangeFragment extends Fragment {
         tvKey.setText(Integer.toString(note.getKey()));
         etLinkCard.setText(Integer.toString(note.getLinkCard()));
         etText.setText(note.getText());
-//        final int position = adapter.getMenuPosition();
-//        FragmentHandler.addFragment(ChangeFragment.newInstance(noteSource.getNoteData(position)), false);
     }
 
     private void createNewCardView() {
@@ -127,9 +125,6 @@ public class ChangeFragment extends Fragment {
 
         //тут будет ключ авто инкремент
         tvKey.setText(Integer.toString((int) (Math.random() * 1000)));
-
-//        final int position = adapter.getMenuPosition();
-//        FragmentHandler.addFragment(ChangeFragment.newInstance(noteSource.getNoteData(position)), false);
     }
 
     private void initView(View view) {

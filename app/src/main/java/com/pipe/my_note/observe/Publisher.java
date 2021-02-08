@@ -1,6 +1,7 @@
 package com.pipe.my_note.observe;
 
 import com.pipe.my_note.data.NoteData;
+import com.pipe.my_note.data.NoteSourceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +25,9 @@ public class Publisher {
         observers.clear();
     }
 
-    public void notifySingle(NoteData note) {
+    public void notifySingle(NoteData noteData) {
         for (Observer observer : observers) {
-            observer.updateNotes(note);
+            observer.updateNotes(noteData);
             unsubscribe(observer);
         }
     }

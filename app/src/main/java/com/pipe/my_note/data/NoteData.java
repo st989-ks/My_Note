@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.text.SimpleDateFormat;
 
-public class NoteData implements Parcelable {
+public class NoteData implements Parcelable  {
     public static final Creator<NoteData> CREATOR = new Creator<NoteData>() {
         @Override
         public NoteData createFromParcel(Parcel in) {
