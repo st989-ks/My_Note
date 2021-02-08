@@ -10,9 +10,13 @@ import androidx.fragment.app.FragmentTransaction;
 import com.pipe.my_note.R;
 import com.pipe.my_note.fragment.SecondFragment;
 
-public abstract class FragmentHandler {
+public class Navigation {
 
-    private static FragmentManager fragmentManager;
+    private final FragmentManager fragmentManager;
+
+    public Navigation(FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+    }
 
     public static void replaceFragment(FragmentActivity activity, Fragment fragment,
                                        int fragmentIdToReplace, boolean addToBackStack,
@@ -20,14 +24,14 @@ public abstract class FragmentHandler {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(fragmentIdToReplace, fragment);
-        if (popUpBeforeReplace){
+        if (popUpBeforeReplace) {
             Fragment oldFragment = fragmentManager.findFragmentById(fragmentIdToReplace);
-            if (activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && oldFragment instanceof SecondFragment){
+            if (activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && oldFragment instanceof SecondFragment) {
                 fragmentManager.popBackStack();
             }
         }
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        if (addToBackStack){
+        if (addToBackStack) {
             fragmentTransaction.addToBackStack(null);
         }
         fragmentTransaction.commitAllowingStateLoss();
@@ -41,11 +45,13 @@ public abstract class FragmentHandler {
             return R.id.root_of_note;
         }
     }
+
     public static void popBackStack(FragmentActivity activity) {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         fragmentManager.popBackStack();
     }
-    public static void addFragment(Fragment fragment, boolean useBackStack) {
+
+    public void addFragment(Fragment fragment, boolean useBackStack) {
         // Открыть транзакцию
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);

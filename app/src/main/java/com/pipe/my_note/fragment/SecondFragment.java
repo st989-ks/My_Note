@@ -11,17 +11,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.pipe.my_note.MainActivity;
 import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
-import com.pipe.my_note.data.NoteSourceImpl;
 import com.pipe.my_note.observe.Publisher;
 import com.pipe.my_note.ui.Constant;
-import com.pipe.my_note.ui.FragmentHandler;
+import com.pipe.my_note.ui.Navigation;
 import com.pipe.my_note.ui.RecyclerViewAdapter;
 
 public class SecondFragment extends Fragment {
@@ -43,7 +41,7 @@ public class SecondFragment extends Fragment {
 
         SecondFragment f = new SecondFragment();
         Bundle args = new Bundle();
-        args.putParcelable(Constant.ARG_SECOND_NOTE, content);
+        args.putParcelable(Constant.ARG_NOTE, content);
         f.setArguments(args);
         return f;
     }
@@ -65,7 +63,7 @@ public class SecondFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            note = getArguments().getParcelable(Constant.ARG_SECOND_NOTE);
+            note = getArguments().getParcelable(Constant.ARG_NOTE);
         }
         isLandscape = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
@@ -120,7 +118,7 @@ public class SecondFragment extends Fragment {
         // Создаём новый фрагмент с текущей позицией
         Fragment fragment;
         fragment = ChangeFragment.newInstance(completionNote);
-        FragmentHandler.replaceFragment(requireActivity(), fragment,
+        Navigation.replaceFragment(requireActivity(), fragment,
                 R.id.second_zettelkasten, false, false);
     }
 
@@ -130,7 +128,7 @@ public class SecondFragment extends Fragment {
         Fragment fragment;
         if (context != null) {
             fragment = ChangeFragment.newInstance(completionNote);
-            FragmentHandler.replaceFragment(requireActivity(), fragment,
+            Navigation.replaceFragment(requireActivity(), fragment,
                     R.id.root_of_note, true, false);
         }
     }

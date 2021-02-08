@@ -25,7 +25,7 @@ import com.pipe.my_note.data.NoteSource;
 import com.pipe.my_note.data.NoteSourceImpl;
 import com.pipe.my_note.observe.Publisher;
 import com.pipe.my_note.ui.Constant;
-import com.pipe.my_note.ui.FragmentHandler;
+import com.pipe.my_note.ui.Navigation;
 import com.pipe.my_note.ui.OnRegisterMenu;
 import com.pipe.my_note.ui.RecyclerViewAdapter;
 
@@ -38,6 +38,18 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
     private RecyclerViewAdapter adapter;
     private Publisher publisher;
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        MainActivity activity = (MainActivity) context;
+        publisher = activity.getPublisher();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        notesSource = new NoteSourceImpl(getResources()).init();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,34 +60,14 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        MainActivity activity = (MainActivity) context;
-        publisher = activity.getPublisher();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        publisher = null;
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putInt(Constant.ARG_INDEX, completionNote);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initRecyclerView(view);
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        notesSource = new NoteSourceImpl(getResources()).init();
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
     }
 
     @Override
@@ -96,74 +88,6 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
         }
     }
 
-    private NoteData getNote(int position) {
-        return notesSource.getNoteData(position);
-    }
-
-    private void initRecyclerView(View view) {
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        adapter = new RecyclerViewAdapter(notesSource, this);
-
-//        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
-//        itemDecoration.setDrawable(getResources().getDrawable(R.drawable.separator, null));
-//        recyclerView.addItemDecoration(itemDecoration);
-
-        adapter.setOnItemClickListener((v, position) -> {
-            FirstFragment.this.showTheCard(FirstFragment.this.getNote(position));
-            completionNote = position;
-            publisher.subscribe(note -> {
-                notesSource.updateNoteData(position, note);
-                completionNote = position;
-                adapter.notifyItemChanged(position);
-            });
-        });
-        recyclerView.setAdapter(adapter);
-    }
-
-    private void showTheCard(NoteData completionNote) {
-        if (isLandscape) {
-            showLandTheCard(completionNote);
-        } else {
-            showPortTheCard(completionNote);
-        }
-    }
-
-    private void showLandTheCard(NoteData completionNote) {
-        // Создаём новый фрагмент с текущей позицией
-        Fragment fragment;
-        if (completionNote == null) {
-            fragment = ChangeFragment.newInstance();
-        } else {
-            fragment = SecondFragment.newInstance(completionNote);
-        }
-        FragmentHandler.replaceFragment(requireActivity(), fragment,
-                R.id.second_zettelkasten, false, false);
-    }
-
-    private void showPortTheCard(NoteData completionNote) {
-        // Откроем вторую activity
-        Context context = getContext();
-        Fragment fragment;
-        if (context != null) {
-            if (completionNote == null) {
-                fragment = ChangeFragment.newInstance();
-            } else {
-                fragment = SecondFragment.newInstance(completionNote);
-            }
-            FragmentHandler.replaceFragment(requireActivity(), fragment,
-                    R.id.root_of_note, true, false);
-        }
-    }
-
-    @Override
-    public void onRegister(View view) {
-        registerForContextMenu(view);
-    }
-
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -172,8 +96,20 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(Constant.ARG_INDEX, completionNote);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        publisher = null;
+    }
+
+    @Override
+    public void onRegister(View view) {
+        registerForContextMenu(view);
     }
 
     @Override
@@ -218,5 +154,69 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
         Log.i(MainActivity.TAG, this.getClass().getSimpleName() + " -onOptionsItemSelected");
         return super.onOptionsItemSelected(item);
     }
+    private NoteData getNote(int position) {
+        return notesSource.getNoteData(position);
+    }
+
+    private void initRecyclerView(View view) {
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        adapter = new RecyclerViewAdapter(notesSource, this);
+
+//        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+//        itemDecoration.setDrawable(getResources().getDrawable(R.drawable.separator, null));
+//        recyclerView.addItemDecoration(itemDecoration);
+
+        adapter.setOnItemClickListener((v, position) -> {
+            FirstFragment.this.showTheCard(FirstFragment.this.getNote(position));
+            completionNote = position;
+            publisher.subscribe(note -> {
+                notesSource.updateNoteData(position, note);
+                completionNote = position;
+                adapter.notifyItemChanged(position);
+            });
+        });
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void showTheCard(NoteData completionNote) {
+        if (isLandscape) {
+            showLandTheCard(completionNote);
+        } else {
+            showPortTheCard(completionNote);
+        }
+    }
+
+    private void showLandTheCard(NoteData completionNote) {
+        // Создаём новый фрагмент с текущей позицией
+        Fragment fragment;
+        if (completionNote == null) {
+            fragment = ChangeFragment.newInstance();
+        } else {
+            fragment = SecondFragment.newInstance(completionNote);
+        }
+        Navigation.replaceFragment(requireActivity(), fragment,
+                R.id.second_zettelkasten, false, false);
+    }
+
+    private void showPortTheCard(NoteData completionNote) {
+        // Откроем вторую activity
+        Context context = getContext();
+        Fragment fragment;
+        if (context != null) {
+            if (completionNote == null) {
+                fragment = ChangeFragment.newInstance();
+            } else {
+                fragment = SecondFragment.newInstance(completionNote);
+            }
+            Navigation.replaceFragment(requireActivity(), fragment,
+                    R.id.root_of_note, true, false);
+        }
+    }
+
+
 
 }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -75,6 +76,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             textViewTag = itemView.findViewById(R.id.tag_title);
             textViewDate = itemView.findViewById(R.id.date_title);
             checkBox = itemView.findViewById(R.id.check_box);
+            registerContextMenu(itemView);
             itemView.setOnClickListener(v -> {
                 if (clickListener != null) {
                 clickListener.onItemClick(v, getAdapterPosition());
@@ -89,10 +91,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         public void onBind(NoteData noteData) {
-            textViewName.setText(noteData.getTitle());
-            textViewTag.setText(noteData.getTag());
-            textViewDate.setText(noteData.getFormatDate());
-            checkBox.setChecked(noteData.getLike());
+            getTextViewName().setText(noteData.getTitle());
+            getTextViewTag().setText(noteData.getTag());
+            getTextViewDate().setText(noteData.getFormatDate());
+            getCheckBox().setChecked(noteData.getLike());
             Log.i(MainActivity.TAG, this.getClass().getSimpleName() + " -onBind");
         }
 
@@ -105,6 +107,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 fragment.registerForContextMenu(view);
             }
             Log.i(MainActivity.TAG, this.getClass().getSimpleName() + " -registerContextMenu");
+        }
+        public TextView getTextViewName() {
+            return textViewName;
+        }
+
+        public TextView getTextViewTag() {
+            return textViewTag;
+        }
+
+        public TextView getTextViewDate() {
+            return textViewDate;
+        }
+
+        public CheckBox getCheckBox() {
+            return checkBox;
         }
     }
 }

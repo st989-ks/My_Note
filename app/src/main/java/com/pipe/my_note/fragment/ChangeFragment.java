@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.pipe.my_note.data.NoteSource;
 import com.pipe.my_note.ui.Constant;
-import com.pipe.my_note.ui.FragmentHandler;
+import com.pipe.my_note.ui.Navigation;
 import com.pipe.my_note.MainActivity;
 import com.pipe.my_note.R;
 import com.pipe.my_note.observe.Publisher;
@@ -45,7 +45,7 @@ public class ChangeFragment extends Fragment {
     public static ChangeFragment newInstance(NoteData note) {
         ChangeFragment f = new ChangeFragment();
         Bundle args = new Bundle();
-        args.putParcelable(Constant.ARG_SECOND_NOTE, note);
+        args.putParcelable(Constant.ARG_NOTE, note);
         f.setArguments(args);
         return f;
     }
@@ -59,7 +59,7 @@ public class ChangeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            note = getArguments().getParcelable(Constant.ARG_SECOND_NOTE);
+            note = getArguments().getParcelable(Constant.ARG_NOTE);
         }
     }
 
@@ -127,6 +127,9 @@ public class ChangeFragment extends Fragment {
 
         //тут будет ключ авто инкремент
         tvKey.setText(Integer.toString((int) (Math.random() * 1000)));
+
+//        final int position = adapter.getMenuPosition();
+//        FragmentHandler.addFragment(ChangeFragment.newInstance(noteSource.getNoteData(position)), false);
     }
 
     private void initView(View view) {
@@ -151,7 +154,7 @@ public class ChangeFragment extends Fragment {
 
     private void popBackStackIfNotLand() {
         if (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE)
-            FragmentHandler.popBackStack(requireActivity());
+            Navigation.popBackStack(requireActivity());
     }
 
     public String getDate() {

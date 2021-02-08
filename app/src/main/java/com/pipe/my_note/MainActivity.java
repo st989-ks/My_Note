@@ -12,6 +12,8 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.pipe.my_note.fragment.AboutFragment;
@@ -19,19 +21,25 @@ import com.pipe.my_note.fragment.ChangeFragment;
 import com.pipe.my_note.fragment.FirstFragment;
 import com.pipe.my_note.fragment.SettingsFragment;
 import com.pipe.my_note.observe.Publisher;
-import com.pipe.my_note.ui.FragmentHandler;
+import com.pipe.my_note.ui.Navigation;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     public final static String TAG = " Мое сообщение ";
     private final Publisher publisher = new Publisher();
+    private Navigation navigation;
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+    private Fragment fragment = getVisibleFragment(fragmentManager);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        FragmentHandler.replaceFragment(MainActivity.this, new FirstFragment(),
+        navigation = new Navigation(getSupportFragmentManager());
+        getNavigation().replaceFragment(MainActivity.this, new FirstFragment(),
                 R.id.root_of_note, false, true);
         Log.i(TAG, this.getClass().getSimpleName() + " -onCreate");
     }
@@ -60,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public Navigation getNavigation() {
+        return navigation;
+    }
+
     private void initView() {
         Toolbar toolbar = initToolBar();
         initDrawer(toolbar);
@@ -85,25 +97,25 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             switch (itemId) {
                 case R.id.menu_settings:
-                    FragmentHandler.replaceFragment(MainActivity.this,
+                    Navigation.replaceFragment(MainActivity.this,
                             new SettingsFragment(),
-                            FragmentHandler.getIdFromOrientation(MainActivity.this),
+                            Navigation.getIdFromOrientation(MainActivity.this),
                             true, false);
                     drawer.closeDrawer(GravityCompat.START);
                     Log.i(TAG, this.getClass().getSimpleName() + " -initDrawer" + " -menu_settings");
                     return true;
                 case R.id.menu_about:
-                    FragmentHandler.replaceFragment(MainActivity.this,
+                    Navigation.replaceFragment(MainActivity.this,
                             new AboutFragment(),
-                            FragmentHandler.getIdFromOrientation(MainActivity.this),
+                            Navigation.getIdFromOrientation(MainActivity.this),
                             true, false);
                     drawer.closeDrawer(GravityCompat.START);
                     Log.i(TAG, this.getClass().getSimpleName() + " -initDrawer" + " -menu_about");
                     return true;
                 case R.id.menu_add_a_note:
-                    FragmentHandler.replaceFragment(MainActivity.this,
+                    Navigation.replaceFragment(MainActivity.this,
                             new ChangeFragment(),
-                            FragmentHandler.getIdFromOrientation(MainActivity.this),
+                            Navigation.getIdFromOrientation(MainActivity.this),
                             true, false);
                     drawer.closeDrawer(GravityCompat.START);
                     Log.i(TAG, this.getClass().getSimpleName() + " -initDrawer" + " -menu_add_a_note");
@@ -121,5 +133,21 @@ public class MainActivity extends AppCompatActivity {
     public Publisher getPublisher() {
         Log.i(TAG, this.getClass().getSimpleName() + " -getPublisher");
         return publisher;
+    }
+
+    private Fragment getVisibleFragment(FragmentManager fragmentManager) {
+        List<Fragment> fragments = fragmentManager.getFragments();
+        int countFragments = fragments.size();
+        for (int i = countFragments - 1; i >= 0; i--) {
+            Fragment fragment = fragments.get(i);
+            if (fragment.isVisible())
+                return fragment;
+        }
+        return null;
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
