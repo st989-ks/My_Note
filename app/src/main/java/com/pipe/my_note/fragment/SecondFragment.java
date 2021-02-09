@@ -14,12 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.pipe.my_note.MainActivity;
+import com.pipe.my_note.Navigation;
 import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
+import com.pipe.my_note.observe.Observer;
 import com.pipe.my_note.observe.Publisher;
 import com.pipe.my_note.ui.Constant;
-import com.pipe.my_note.ui.Navigation;
 import com.pipe.my_note.ui.RecyclerViewAdapter;
 
 public class SecondFragment extends Fragment {
@@ -36,6 +37,7 @@ public class SecondFragment extends Fragment {
     private NoteSource notesSource;
     private int completionNote;
     private RecyclerViewAdapter adapter;
+    private Navigation navigation;
 
     public static SecondFragment newInstance(NoteData content) {
 
@@ -55,8 +57,8 @@ public class SecondFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        super.onDetach();
         publisher = null;
+        super.onDetach();
     }
 
     @Override
@@ -74,13 +76,15 @@ public class SecondFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_second, container, false);
         initView(view);
-//        if (isLandscape) {
-//            showLandTheCard(getNote(completionNote));
-//        }
         return view;
     }
 
     private void initView(View view) {
+        initTextCard(view);
+        initButton(view);
+    }
+
+    private void initTextCard(View view) {
         tvName = view.findViewById(R.id.zettelkasten_name);
         tvCreated = view.findViewById(R.id.zettelkasten_created);
         tvTags = view.findViewById(R.id.zettelkasten_tags);
@@ -93,16 +97,25 @@ public class SecondFragment extends Fragment {
         tvKey.setText(Integer.toString((note.getKey())));
         tvLinkCard.setText(Integer.toString((note.getLinkCard())));
         tvText.setText(note.getText());
+    }
+
+    private void initButton(View view) {
         Button buttonCancel = view.findViewById(R.id.button_change);
-        buttonCancel.setOnClickListener(v -> {
-            showTheCard(note);
-            publisher.subscribe(note -> {
-                notesSource.addNoteData(note);
-                completionNote = notesSource.size() - 1;
-                adapter.notifyItemInserted(completionNote);
-            });
-            Log.i(MainActivity.TAG, this.getClass().getSimpleName() +
-                    " -initView" + " -buttonCancel.setOnClickListener");
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SecondFragment.this.showTheCard(note);
+                publisher.subscribe(new Observer() {
+                    @Override
+                    public void updateNotes(NoteData note) {
+                        notesSource.addNoteData(note);
+                        completionNote = notesSource.size() - 1;
+                        adapter.notifyItemInserted(completionNote);
+                    }
+                });
+                Log.i(MainActivity.TAG, SecondFragment.this.getClass().getSimpleName() +
+                        " -initView" + " -buttonCancel.setOnClickListener");
+            }
         });
     }
 
@@ -119,7 +132,7 @@ public class SecondFragment extends Fragment {
         Fragment fragment;
         fragment = ChangeFragment.newInstance(completionNote);
         Navigation.replaceFragment(requireActivity(), fragment,
-                R.id.second_zettelkasten, false, false);
+                R.id.second_zettelkasten, true, true, false);
     }
 
     private void showPortTheCard(NoteData completionNote) {
@@ -129,7 +142,7 @@ public class SecondFragment extends Fragment {
         if (context != null) {
             fragment = ChangeFragment.newInstance(completionNote);
             Navigation.replaceFragment(requireActivity(), fragment,
-                    R.id.root_of_note, true, false);
+                    R.id.root_of_note, true, true, false);
         }
     }
 }

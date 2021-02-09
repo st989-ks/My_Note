@@ -20,13 +20,14 @@ import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.observe.Publisher;
 import com.pipe.my_note.ui.Constant;
-import com.pipe.my_note.ui.Navigation;
+import com.pipe.my_note.Navigation;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ChangeFragment extends Fragment {
 
+    private boolean newFragment;
     private EditText etName;
     private TextView tvCreated;
     private Publisher publisher;
@@ -34,9 +35,11 @@ public class ChangeFragment extends Fragment {
     private TextView tvKey;
     private EditText etLinkCard;
     private EditText etText;
-    private NoteData note;
+    private NoteData noteData;
+    private NoteData noteDataChang;
     private CheckBox like;
     private long nowDay;
+    private boolean isLandscape;
 
     //фрагмент для редактирования данных
     public static ChangeFragment newInstance(NoteData note) {
@@ -49,8 +52,8 @@ public class ChangeFragment extends Fragment {
 
     //фрагмент для добавления новых данных
     public static ChangeFragment newInstance() {
-        ChangeFragment fragment = new ChangeFragment();
-        return fragment;
+        ChangeFragment f = new ChangeFragment();
+        return f;
     }
 
     @Override
@@ -64,8 +67,10 @@ public class ChangeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            note = getArguments().getParcelable(Constant.ARG_CHANGE_NOTE);
+            noteData = getArguments().getParcelable(Constant.ARG_CHANGE_NOTE);
         }
+        isLandscape = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     @Override
@@ -73,25 +78,15 @@ public class ChangeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_change, container, false);
         initView(view);
-        if (note != null) {
+        if (noteData != null) {
+            newFragment = true;
             changeCardView();
         } else {
+            newFragment = false;
             createNewCardView();
         }
         setHasOptionsMenu(true);
         return view;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        note = collectNote();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        publisher.notifySingle(note);
     }
 
     @Override
@@ -112,12 +107,12 @@ public class ChangeFragment extends Fragment {
     }
 
     private void changeCardView() {
-        etName.setText(note.getTitle());
-        tvCreated.setText(note.getFormatDate());
-        etTags.setText(note.getTag());
-        tvKey.setText(Integer.toString(note.getKey()));
-        etLinkCard.setText(Integer.toString(note.getLinkCard()));
-        etText.setText(note.getText());
+        etName.setText(noteData.getTitle());
+        tvCreated.setText(noteData.getFormatDate());
+        etTags.setText(noteData.getTag());
+        tvKey.setText(Integer.toString(noteData.getKey()));
+        etLinkCard.setText(Integer.toString(noteData.getLinkCard()));
+        etText.setText(noteData.getText());
     }
 
     private void createNewCardView() {
@@ -138,8 +133,8 @@ public class ChangeFragment extends Fragment {
 
         Button buttonSave = view.findViewById(R.id.button_save);
         buttonSave.setOnClickListener(v -> {
-            note = collectNote();
-            publisher.notifySingle(note);
+            noteDataChang = collectNote();
+            publisher.notifySingle(noteDataChang);
             popBackStackIfNotLand();
         });
         Button buttonCancel = view.findViewById(R.id.button_cancel);

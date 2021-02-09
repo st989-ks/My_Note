@@ -23,9 +23,10 @@ import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
 import com.pipe.my_note.data.NoteSourceImpl;
+import com.pipe.my_note.observe.Observer;
 import com.pipe.my_note.observe.Publisher;
 import com.pipe.my_note.ui.Constant;
-import com.pipe.my_note.ui.Navigation;
+import com.pipe.my_note.Navigation;
 import com.pipe.my_note.ui.OnRegisterMenu;
 import com.pipe.my_note.ui.RecyclerViewAdapter;
 
@@ -104,8 +105,8 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
 
     @Override
     public void onDetach() {
-        super.onDetach();
         publisher = null;
+        super.onDetach();
     }
 
     @Override
@@ -118,31 +119,22 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
         int id = item.getItemId();
         switch (id) {
             case R.id.menu_about:
-//                FragmentHandler.replaceFragment(this,
-//                        new AboutFragment(),
-//                        FragmentHandler.getIdFromOrientation(this),
-//                        true, false);
                 Log.i(MainActivity.TAG, this.getClass().getSimpleName() +
                         " -onOptionsItemSelected" + " -menu_about");
                 return true;
             case R.id.menu_settings:
-//                FragmentHandler.replaceFragment(MainActivity.this,
-//                        new SettingsFragment(),
-//                        FragmentHandler.getIdFromOrientation(MainActivity.this),
-//                        true, false);
                 Log.i(MainActivity.TAG, this.getClass().getSimpleName() +
                         " -onOptionsItemSelected" + " -menu_settings");
                 return true;
             case R.id.menu_add_a_note:
-//                FragmentHandler.replaceFragment(MainActivity.this,
-//                        new ChangeFragment(),
-//                        FragmentHandler.getIdFromOrientation(MainActivity.this),
-//                        true, false);
                 showTheCard(null);
-                publisher.subscribe(note -> {
-                    notesSource.addNoteData(note);
-                    completionNote = notesSource.size() - 1;
-                    adapter.notifyItemInserted(completionNote);
+                publisher.subscribe(new Observer() {
+                    @Override
+                    public void updateNotes(NoteData noteData) {
+                        notesSource.addNoteData(noteData);
+                        completionNote = notesSource.size() - 1;
+                        adapter.notifyItemInserted(completionNote);
+                    }
                 });
                 Log.i(MainActivity.TAG, this.getClass().getSimpleName() +
                         " -onOptionsItemSelected" + " -menu_add_a_note");
@@ -166,10 +158,6 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new RecyclerViewAdapter(notesSource, this);
-
-//        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
-//        itemDecoration.setDrawable(getResources().getDrawable(R.drawable.separator, null));
-//        recyclerView.addItemDecoration(itemDecoration);
 
         adapter.setOnItemClickListener((v, position) -> {
             FirstFragment.this.showTheCard(FirstFragment.this.getNote(position));
@@ -200,24 +188,21 @@ public class FirstFragment extends Fragment implements OnRegisterMenu {
             fragment = SecondFragment.newInstance(completionNote);
         }
         Navigation.replaceFragment(requireActivity(), fragment,
-                R.id.second_zettelkasten, false, false);
+                R.id.second_zettelkasten, false, false, false);
     }
 
     private void showPortTheCard(NoteData completionNote) {
         // Откроем вторую activity
         Context context = getContext();
-        Fragment fragment;
         if (context != null) {
+            Fragment fragment;
             if (completionNote == null) {
                 fragment = ChangeFragment.newInstance();
             } else {
                 fragment = SecondFragment.newInstance(completionNote);
             }
             Navigation.replaceFragment(requireActivity(), fragment,
-                    R.id.root_of_note, true, false);
+                    R.id.root_of_note, true, false,false);
         }
     }
-
-
-
 }

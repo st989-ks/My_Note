@@ -21,7 +21,6 @@ import com.pipe.my_note.fragment.ChangeFragment;
 import com.pipe.my_note.fragment.FirstFragment;
 import com.pipe.my_note.fragment.SettingsFragment;
 import com.pipe.my_note.observe.Publisher;
-import com.pipe.my_note.ui.Navigation;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
         navigation = new Navigation(getSupportFragmentManager());
         getNavigation().replaceFragment(MainActivity.this, new FirstFragment(),
-                R.id.root_of_note, false, true);
+                R.id.root_of_note, false, true, false);
         Log.i(TAG, this.getClass().getSimpleName() + " -onCreate");
     }
 
@@ -100,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     Navigation.replaceFragment(MainActivity.this,
                             new SettingsFragment(),
                             Navigation.getIdFromOrientation(MainActivity.this),
-                            true, false);
+                            true, false,false);
                     drawer.closeDrawer(GravityCompat.START);
                     Log.i(TAG, this.getClass().getSimpleName() + " -initDrawer" + " -menu_settings");
                     return true;
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                     Navigation.replaceFragment(MainActivity.this,
                             new AboutFragment(),
                             Navigation.getIdFromOrientation(MainActivity.this),
-                            true, false);
+                            true, false,false);
                     drawer.closeDrawer(GravityCompat.START);
                     Log.i(TAG, this.getClass().getSimpleName() + " -initDrawer" + " -menu_about");
                     return true;
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                     Navigation.replaceFragment(MainActivity.this,
                             new ChangeFragment(),
                             Navigation.getIdFromOrientation(MainActivity.this),
-                            true, false);
+                            true, false,false);
                     drawer.closeDrawer(GravityCompat.START);
                     Log.i(TAG, this.getClass().getSimpleName() + " -initDrawer" + " -menu_add_a_note");
                     return true;

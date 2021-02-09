@@ -23,6 +23,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private OnItemClickListener clickListener;
     private int menuPosition;
 
+
     public RecyclerViewAdapter(NoteSource dataSource, Fragment fragment) {
         this.dataSource = dataSource;
         this.fragment = fragment;

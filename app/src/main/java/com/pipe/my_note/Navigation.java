@@ -1,4 +1,4 @@
-package com.pipe.my_note.ui;
+package com.pipe.my_note;
 
 import android.content.res.Configuration;
 
@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.pipe.my_note.R;
 import com.pipe.my_note.fragment.SecondFragment;
 
 public class Navigation {
@@ -20,25 +19,39 @@ public class Navigation {
 
     public static void replaceFragment(FragmentActivity activity, Fragment fragment,
                                        int fragmentIdToReplace, boolean addToBackStack,
-                                       boolean popUpBeforeReplace) {
+                                       boolean popUpBeforeReplace, boolean add) {
+        //Получить менеджер фрагментов
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
+
+        // Открыть транзакцию
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(fragmentIdToReplace, fragment);
+        Boolean isLandscape = false;
         if (popUpBeforeReplace) {
             Fragment oldFragment = fragmentManager.findFragmentById(fragmentIdToReplace);
-            if (activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && oldFragment instanceof SecondFragment) {
-                fragmentManager.popBackStack();
+            if (activity.getResources().getConfiguration().orientation == Configuration
+                    .ORIENTATION_LANDSCAPE && oldFragment instanceof SecondFragment) {
+                isLandscape = true;
             }
         }
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        if (addToBackStack) {
-            fragmentTransaction.addToBackStack(null);
+        if (isLandscape) {
+            fragmentManager.popBackStack();
+        } else {
+            fragmentTransaction.replace(fragmentIdToReplace, fragment);
+
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            if (addToBackStack) {
+                fragmentTransaction.addToBackStack(null);
+            }
+            fragmentTransaction.commitAllowingStateLoss();
         }
-        fragmentTransaction.commitAllowingStateLoss();
+
+        fragmentTransaction.replace(fragmentIdToReplace, fragment);
+//        fragmentManager.popBackStack();
     }
 
     public static int getIdFromOrientation(FragmentActivity activity) {
-        Boolean isLandscape = activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        Boolean isLandscape = activity.getResources().getConfiguration()
+                .orientation == Configuration.ORIENTATION_LANDSCAPE;
         if (isLandscape) {
             return R.id.second_zettelkasten;
         } else {
@@ -49,17 +62,6 @@ public class Navigation {
     public static void popBackStack(FragmentActivity activity) {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         fragmentManager.popBackStack();
-    }
-
-    public void addFragment(Fragment fragment, boolean useBackStack) {
-        // Открыть транзакцию
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        if (useBackStack) {
-            fragmentTransaction.addToBackStack(null);
-        }
-        // Закрыть транзакцию
-        fragmentTransaction.commit();
     }
 }
 
