@@ -11,7 +11,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button_save"
+            android:id="@+id/zettelkasten_button_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -20,7 +20,7 @@
             android:textSize="@dimen/text_size_20" />
 
         <Button
-            android:id="@+id/button_cancel"
+            android:id="@+id/zettelkasten_button_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -81,7 +81,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:hint="@string/link_card"
+            android:inputType="number"
+            android:hint="@string/key"
             android:textSize="@dimen/text_size_20" />
     </LinearLayout>
 

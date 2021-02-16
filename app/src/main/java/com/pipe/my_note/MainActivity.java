@@ -1,76 +1,125 @@
 package com.pipe.my_note;
 
-import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.Handler;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.material.navigation.NavigationView;
-import com.pipe.my_note.fragment.AboutFragment;
-import com.pipe.my_note.fragment.ChangeFragment;
-import com.pipe.my_note.fragment.FirstFragment;
-import com.pipe.my_note.fragment.SettingsFragment;
+import com.pipe.my_note.data.NoteData;
+import com.pipe.my_note.data.NoteSource;
+import com.pipe.my_note.data.NoteSourceImpl;
+import com.pipe.my_note.data.StringData;
+import com.pipe.my_note.fragments.FirstFragmentListOfNotes;
+import com.pipe.my_note.fragments.ForthFragmentAbout;
+import com.pipe.my_note.fragments.SecondFragment;
+import com.pipe.my_note.fragments.ThirdFragmentSettings;
 import com.pipe.my_note.observe.Publisher;
 
 public class MainActivity extends AppCompatActivity {
+    public static boolean bulledPositionForReplace;
     private final Publisher publisher = new Publisher();
+    public boolean isLandscape;
+    private NoteSource notesSource;
+    private boolean exit = false;
+    NavigationFragment navigationFragment;
+    private int numberPosition = 1;
+
+    public static int getIdFromOrientation(FragmentActivity activity) {
+        Boolean isLandscape = activity.getResources().getConfiguration()
+                .orientation == Configuration.ORIENTATION_LANDSCAPE;
+        if (isLandscape) {
+            return R.id.second_note;
+        } else {
+            return R.id.first_note;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        navigationFragment = new NavigationFragment(getSupportFragmentManager());
         initView();
-        FragmentHandler.replaceFragment(MainActivity.this, new FirstFragment(),
-                R.id.root_of_note, false, true);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-        MenuItem search = menu.findItem(R.id.menu_search);
-        SearchView searchText = (SearchView) search.getActionView();
-        searchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT).show();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return true;
-            }
-        });
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public Publisher getPublisher() {
+        return publisher;
+    }
+    public com.pipe.my_note.NavigationFragment getNavigationFragment() {
+        return navigationFragment;
     }
 
     private void initView() {
-        Toolbar toolbar = initToolBar();
+        initToolbar();
+        addFragmentOrientating();
+    }
+
+    private void addFragmentOrientating() {
+        isLandscape = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
+        if (isLandscape) {
+            showLandTheCard();
+        } else {
+            showPartTheCard();
+        }
+    }
+
+    private void showLandTheCard() {
+        // Создаём новый фрагмент с текущей позицией
+        Fragment fragmentFirst = FirstFragmentListOfNotes.newInstance();
+        getNavigationFragment().replaceFragment( R.id.first_note, fragmentFirst, true);
+
+        Fragment secondFragment;
+//        readNumberNote();
+        secondFragment = SecondFragment.newInstance(notesSource.getNoteData(numberPosition));
+
+        getNavigationFragment().replaceFragment( R.id.second_note, secondFragment, false);
+    }
+
+    private void showPartTheCard() {
+        // Создаём новый фрагмент с текущей позицией
+        Fragment fragment;
+//        readNumberNote();
+        if (bulledPositionForReplace) {
+            fragment = SecondFragment.newInstance(notesSource.getNoteData(numberPosition));
+
+        } else {
+            fragment = new FirstFragmentListOfNotes();
+        }
+        bulledPositionForReplace = false;
+        getNavigationFragment().replaceFragment(R.id.first_note, fragment, true);
+    }
+
+    private NoteData getNote(int position) {
+        return notesSource.getNoteData(position);
+    }
+
+    private void readNumberNote() {
+        SharedPreferences sharedPref = getSharedPreferences(StringData.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+
+        int position = sharedPref.getInt(StringData.ARG_SIX_POSITION, 0);
+        if (position <= notesSource.size()) numberPosition = position;
+
+
+//        bulledPositionForReplace = sharedPref.getBoolean(StringData.ARG_FIRST_BULLED_POSITION, false);
+    }
+
+    private void initToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         initDrawer(toolbar);
     }
 
-    private Toolbar initToolBar() {
-
-        class Local {
-        }
-        getName(Local.class.getEnclosingMethod().getName());
-
-        Toolbar toolbar = findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
-        return toolbar;
-    }
-
-    @SuppressLint("NonConstantResourceId")
     private void initDrawer(Toolbar toolbar) {
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -83,77 +132,39 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             switch (itemId) {
                 case R.id.menu_settings:
-                    FragmentHandler.replaceFragment(MainActivity.this,
-                            new SettingsFragment(),
-                            FragmentHandler.getIdFromOrientation(MainActivity.this),
-                            true, false);
+                    Fragment thirdFragmentSettings = new ThirdFragmentSettings();
+                    getNavigationFragment().replaceFragment( getIdFromOrientation(this),
+                            thirdFragmentSettings, false);
+                    Toast.makeText(this, R.string.menu_settings, Toast.LENGTH_SHORT).show();
                     drawer.closeDrawer(GravityCompat.START);
-                    getName(String.format("%s", "menu_settings"));
                     return true;
                 case R.id.menu_about:
-                    FragmentHandler.replaceFragment(MainActivity.this,
-                            new AboutFragment(),
-                            FragmentHandler.getIdFromOrientation(MainActivity.this),
-                            true, false);
+                    Fragment forthFragmentAbout = new ForthFragmentAbout();
+                    getNavigationFragment().replaceFragment( getIdFromOrientation(this),
+                            forthFragmentAbout, false);
+                    Toast.makeText(this, R.string.menu_about, Toast.LENGTH_SHORT).show();
                     drawer.closeDrawer(GravityCompat.START);
-                    getName(String.format("%s", "menu_about"));
-                    return true;
-                case R.id.menu_add_a_note:
-                    FragmentHandler.replaceFragment(MainActivity.this,
-                            new ChangeFragment(),
-                            FragmentHandler.getIdFromOrientation(MainActivity.this),
-                            true, false);
-                    drawer.closeDrawer(GravityCompat.START);
-                    getName(String.format("%s", "menu_add_a_note"));
-                    return true;
-                case R.id.menu_delete_a_note:
-                    drawer.closeDrawer(GravityCompat.START);
-                    getName(String.format("%s", "menu_delete_a_note"));
                     return true;
             }
             return false;
         });
-
     }
 
-    public void getName(String text) {
-        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
-    }
-
-    @SuppressLint("NonConstantResourceId")
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.menu_about:
-                FragmentHandler.replaceFragment(MainActivity.this,
-                        new AboutFragment(),
-                        FragmentHandler.getIdFromOrientation(MainActivity.this),
-                        true, false);
-                getName(String.format("%s", "menu_about"));
-                return true;
-            case R.id.menu_settings:
-                FragmentHandler.replaceFragment(MainActivity.this,
-                        new SettingsFragment(),
-                        FragmentHandler.getIdFromOrientation(MainActivity.this),
-                        true, false);
-                getName(String.format("%s", "menu_settings"));
-                return true;
-            case R.id.menu_add_a_note:
-                FragmentHandler.replaceFragment(MainActivity.this,
-                        new ChangeFragment(),
-                        FragmentHandler.getIdFromOrientation(MainActivity.this),
-                        true, false);
-                getName(String.format("%s", "menu_add_a_note"));
-                return true;
-            case R.id.menu_delete_a_note:
-                getName(String.format("%s", "menu_delete_a_note"));
-                return true;
+    public void onBackPressed() {
+        addFragmentOrientating();
+        if (exit) {
+            MainActivity.this.finish();
+        } else {
+            Toast.makeText(this, "Press Back again to Exit.",
+                    Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, 1000);
         }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public Publisher getPublisher() {
-        return publisher;
     }
 }
