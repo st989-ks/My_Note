@@ -17,10 +17,8 @@ public class NavigationFragment {
         this.fragmentManager = fragmentManager;
     }
 
-    public static void addFragment(FragmentActivity activity, int containerViewId,
-                                   Fragment fragment, String addToBackStack,
+    public void addFragment(int containerViewId, Fragment fragment, String addToBackStack,
                                    boolean popUpBeforeReplace) {
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction = fragmentTransaction.add(containerViewId, fragment);
         if (addToBackStack != null) fragmentTransaction = fragmentTransaction
@@ -28,9 +26,7 @@ public class NavigationFragment {
         fragmentTransaction.commit();
     }
 
-    public static void replaceFragment(FragmentActivity activity, int fragmentIdToReplace,
-                                       Fragment fragment, boolean addToBackStack) {
-        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+    public void replaceFragment(int fragmentIdToReplace, Fragment fragment, boolean addToBackStack) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction = fragmentTransaction.replace(fragmentIdToReplace, fragment);
         if (addToBackStack) fragmentTransaction = fragmentTransaction

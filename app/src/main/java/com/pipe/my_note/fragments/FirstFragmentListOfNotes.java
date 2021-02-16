@@ -27,6 +27,7 @@ import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
 import com.pipe.my_note.data.NoteSourceImpl;
+import com.pipe.my_note.data.NoteSourceResponse;
 import com.pipe.my_note.data.StringData;
 import com.pipe.my_note.observe.Observer;
 import com.pipe.my_note.observe.Publisher;
@@ -83,15 +84,7 @@ public class FirstFragmentListOfNotes extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first, container, false);
         initView(view);
-        setHasOptionsMenu(true);
-//        (new NoteSourceResponse() {
-//            @Override
-//            public void initialized(NoteSource noteData) {
-//                recyclerViewAdapter.notifyDataSetChanged();
-//            }
-//        });
         recyclerViewAdapter.setNoteSource(notesSource);
-
         return view;
     }
 
@@ -138,6 +131,7 @@ public class FirstFragmentListOfNotes extends Fragment {
 //            Fragment secondFragmentShift = new SecondFragmentShift();
 //            NavigationFragment.replaceFragment((FragmentActivity) activity, getIdFromOrientation((FragmentActivity) activity),
 //                    secondFragmentShift, false);
+
             publisher.subscribe(new Observer() {
                 @Override
                 public void updateNotes(NoteData noteData) {
@@ -165,9 +159,15 @@ public class FirstFragmentListOfNotes extends Fragment {
 
     private void initView(View view) {
         recyclerView = view.findViewById(R.id.recycler_view);
-        notesSource = new NoteSourceImpl(getResources()).init();
-
         initRecyclerView();
+        setHasOptionsMenu(true);
+        notesSource = new NoteSourceImpl(getResources()).init(new NoteSourceResponse() {
+            @Override
+            public void initialized(NoteSource cardsData) {
+                recyclerViewAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     public void initRecyclerView() {
@@ -189,16 +189,15 @@ public class FirstFragmentListOfNotes extends Fragment {
             getIdFromOrientation(getActivity());
             completionNote = position;
             Fragment secondFragment;
-            secondFragment = com.pipe.my_note.fragments.SecondFragment.newInstance(getNote(position));
-            NavigationFragment.replaceFragment(getActivity(),  getIdFromOrientation(getActivity()),
+            secondFragment = SecondFragment.newInstance(getNote(position));
+            navigationFragment.replaceFragment( getIdFromOrientation(getActivity()),
                     secondFragment, false);
 //                publisher.subscribe(note -> {
 //                    notesSource.updateNoteData(position, note);
-//                    completionNote = position;
 //                    recyclerViewAdapter.notifyItemChanged(position);
 //                });
         });
-        writeCurrentNote();
+//        writeCurrentNote();
     }
 
     private void writeCurrentNote(){

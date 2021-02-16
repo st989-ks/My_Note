@@ -6,13 +6,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.pipe.my_note.MainActivity;
 import com.pipe.my_note.NavigationFragment;
 import com.pipe.my_note.R;
@@ -20,30 +23,28 @@ import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
 import com.pipe.my_note.data.NoteSourceImpl;
 import com.pipe.my_note.data.StringData;
-import com.pipe.my_note.observe.Observer;
 import com.pipe.my_note.observe.Publisher;
 import com.pipe.my_note.ui.RecyclerViewAdapter;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class SecondFragmentShift extends Fragment {
 
-    EditText tvName;
-    TextView tvCreated;
-    TextView tvKey;
-    EditText tvTags;
-    EditText tvLinkCard;
-    EditText tvText;
-    MainActivity activity;
-    private String newDay;
-
-    private NoteData noteData;
+    private EditText tvName;
+    private TextView tvCreated;
+    private TextView tvKey;
+    private EditText tvTags;
+    private EditText tvLinkCard;
+    private EditText tvText;
 
     NavigationFragment navigationFragment;
+    private RecyclerViewAdapter recyclerViewAdapter;
+    private String newDay;
+    private NoteData noteData;
     private Publisher publisher;
+    private NoteSource notesSource;
 
     public static SecondFragmentShift newInstance(NoteData content) {
         SecondFragmentShift secondFragmentShift = new SecondFragmentShift();
@@ -56,8 +57,7 @@ public class SecondFragmentShift extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        readNewCurrentNote();
-        MainActivity activity = (MainActivity)context;
+        MainActivity activity = (MainActivity) context;
         publisher = activity.getPublisher();
         navigationFragment = activity.getNavigationFragment();
     }
@@ -83,6 +83,7 @@ public class SecondFragmentShift extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_second_shift, container, false);
         initTextCardChange(view);
+        initButton(view);
         return view;
     }
 
@@ -109,13 +110,23 @@ public class SecondFragmentShift extends Fragment {
             tvText.setText(noteData.getText());
         }
     }
+    private NoteData collectNoteData() {
+        String name = tvName.getText().toString();
+        String tags = tvTags.getText().toString();
+        String key = tvKey.getText().toString();
+        String created = noteData.getCreated();
+        String linkCard = tvLinkCard.getText().toString();
+        String text = tvText.getText().toString();
+        return new NoteData( name, tags, key, created,
+                    linkCard, text, false);
+    }
 
-    private void readNewCurrentNote(){
+    private void readNewCurrentNote() {
         SharedPreferences sharedPref = requireActivity().getSharedPreferences(StringData.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         int newCurrentNote = sharedPref.getInt(StringData.ARG_FIFE_COUNT, Integer.parseInt("0"));
     }
 
-    private void writePositionNote(){
+    private void writePositionNote() {
         // Специальный класс для хранения
         SharedPreferences sharedPref = requireActivity().getSharedPreferences(StringData.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         // Сохраняем посредством специального класса editor
@@ -124,6 +135,22 @@ public class SecondFragmentShift extends Fragment {
         editor.putBoolean(StringData.ARG_FIRST_BULLED_POSITION, true);
         // Сохраняем значения
         editor.apply();
+    }
+    private void initButton(View view) {
+        Button buttonSave = view.findViewById(R.id.zettelkasten_button_save);
+        buttonSave.setOnClickListener(v -> {
+            noteData = collectNoteData();
+            publisher.notifySingle(noteData);
+            Toast.makeText(getContext(), R.string.button_save, Toast.LENGTH_SHORT).show();
+            navigationFragment.popBackStack(getActivity());
+
+        });
+
+        Button buttonCancel = view.findViewById(R.id.zettelkasten_button_cancel);
+        buttonCancel.setOnClickListener(v -> {
+            Toast.makeText(getContext(), R.string.button_cancel, Toast.LENGTH_SHORT).show();
+            navigationFragment.popBackStack(getActivity());
+        });
     }
 
 

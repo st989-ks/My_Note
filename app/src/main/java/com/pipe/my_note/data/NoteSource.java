@@ -1,6 +1,9 @@
 package com.pipe.my_note.data;
 
 public interface NoteSource {
+
+    NoteSource init(NoteSourceResponse noteSourceResponse);
+
     NoteData getNoteData(int position);
 
     int size();

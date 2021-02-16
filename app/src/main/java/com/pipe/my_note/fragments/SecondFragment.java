@@ -21,6 +21,7 @@ import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
 import com.pipe.my_note.data.StringData;
+import com.pipe.my_note.observe.Observer;
 import com.pipe.my_note.observe.Publisher;
 import com.pipe.my_note.ui.RecyclerViewAdapter;
 
@@ -111,22 +112,24 @@ public class SecondFragment extends Fragment {
     }
 
     private void initButton(View view) {
-        Button buttonCancel = view.findViewById(R.id.zettelkasten_button_change);
+        Button buttonChange = view.findViewById(R.id.zettelkasten_button_change);
         recyclerViewAdapter = new RecyclerViewAdapter(notesSource, this);
-        buttonCancel.setOnClickListener(v -> {
+        buttonChange.setOnClickListener(v -> {
 
 //            MenuToolbar.getIdFromOrientation(activity);
             Fragment secondFragmentShift;
-            secondFragmentShift = com.pipe.my_note.fragments.SecondFragmentShift.newInstance(noteData);
+            secondFragmentShift = SecondFragmentShift.newInstance(noteData);
 
-            navigationFragment.replaceFragment(getActivity(), getIdFromOrientation(getActivity()),
-                    secondFragmentShift, false);
 
-//            publisher.subscribe(noteData -> {
-//                notesSource.addNoteData(noteData);
-//                completionNote = notesSource.size() - 1;
-//                recyclerViewAdapter.notifyItemInserted(completionNote);
-//            });
+            navigationFragment.replaceFragment( getIdFromOrientation(getActivity()),
+                    secondFragmentShift, true);
+            publisher.subscribe(new Observer() {
+                @Override
+                public void updateNotes(NoteData note) {
+                    notesSource.updateNoteData(Integer.parseInt(noteData.getKey()) - 1, note);
+                    recyclerViewAdapter.notifyItemChanged(Integer.parseInt(noteData.getKey()) - 1);
+                }
+            });
         });
     }
 

@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean isLandscape;
     private NoteSource notesSource;
     private boolean exit = false;
-    com.pipe.my_note.NavigationFragment navigationFragment;
+    NavigationFragment navigationFragment;
     private int numberPosition = 1;
 
     public static int getIdFromOrientation(FragmentActivity activity) {
@@ -48,8 +48,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        navigationFragment = new com.pipe.my_note.NavigationFragment(getSupportFragmentManager());
-        notesSource = new NoteSourceImpl(getResources()).init();
+        navigationFragment = new NavigationFragment(getSupportFragmentManager());
         initView();
     }
 
@@ -78,27 +77,27 @@ public class MainActivity extends AppCompatActivity {
     private void showLandTheCard() {
         // Создаём новый фрагмент с текущей позицией
         Fragment fragmentFirst = FirstFragmentListOfNotes.newInstance();
-        getNavigationFragment().replaceFragment(this, R.id.first_note, fragmentFirst, false);
+        getNavigationFragment().replaceFragment( R.id.first_note, fragmentFirst, true);
 
         Fragment secondFragment;
-        readNumberNote();
-        secondFragment = SecondFragment.newInstance(getNote(numberPosition - 1));
+//        readNumberNote();
+        secondFragment = SecondFragment.newInstance(notesSource.getNoteData(numberPosition));
 
-        getNavigationFragment().replaceFragment(this, R.id.second_note, secondFragment, false);
+        getNavigationFragment().replaceFragment( R.id.second_note, secondFragment, false);
     }
 
     private void showPartTheCard() {
         // Создаём новый фрагмент с текущей позицией
         Fragment fragment;
-        readNumberNote();
+//        readNumberNote();
         if (bulledPositionForReplace) {
-            fragment = SecondFragment.newInstance(getNote(numberPosition - 1));
+            fragment = SecondFragment.newInstance(notesSource.getNoteData(numberPosition));
 
         } else {
             fragment = new FirstFragmentListOfNotes();
         }
         bulledPositionForReplace = false;
-        getNavigationFragment().replaceFragment(this, R.id.first_note, fragment, false);
+        getNavigationFragment().replaceFragment(R.id.first_note, fragment, true);
     }
 
     private NoteData getNote(int position) {
@@ -134,14 +133,14 @@ public class MainActivity extends AppCompatActivity {
             switch (itemId) {
                 case R.id.menu_settings:
                     Fragment thirdFragmentSettings = new ThirdFragmentSettings();
-                    getNavigationFragment().replaceFragment(this, getIdFromOrientation(this),
+                    getNavigationFragment().replaceFragment( getIdFromOrientation(this),
                             thirdFragmentSettings, false);
                     Toast.makeText(this, R.string.menu_settings, Toast.LENGTH_SHORT).show();
                     drawer.closeDrawer(GravityCompat.START);
                     return true;
                 case R.id.menu_about:
                     Fragment forthFragmentAbout = new ForthFragmentAbout();
-                    getNavigationFragment().replaceFragment(this, getIdFromOrientation(this),
+                    getNavigationFragment().replaceFragment( getIdFromOrientation(this),
                             forthFragmentAbout, false);
                     Toast.makeText(this, R.string.menu_about, Toast.LENGTH_SHORT).show();
                     drawer.closeDrawer(GravityCompat.START);
