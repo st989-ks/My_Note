@@ -3,9 +3,29 @@ package com.pipe.my_note.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class NoteData implements Parcelable  {
+
+    private String title;
+    private String tag;
+    private String id;
+    private Date date;
+    private String linkCard;
+    private String text;
+    private boolean like;
+
+    public NoteData(String title, String tag, String id, Date data,
+                    String linkCard, String text, boolean like) {
+        this.title = title;
+        this.tag = tag;
+        this.id = id;
+        this.date = data;
+        this.linkCard = linkCard;
+        this.text = text;
+        this.like = like;
+    }
+
     public static final Creator<NoteData> CREATOR = new Creator<NoteData>() {
         @Override
         public NoteData createFromParcel(Parcel in) {
@@ -17,30 +37,12 @@ public class NoteData implements Parcelable  {
             return new NoteData[size];
         }
     };
-    private String title;
-    private String tag;
-    private String key;
-    private String created;
-    private String linkCard;
-    private String text;
-    private boolean like;
-
-    public NoteData(String title, String tag, String key, String created,
-                    String linkCard, String text, boolean like) {
-        this.title = title;
-        this.tag = tag;
-        this.key = key;
-        this.created = created;
-        this.linkCard = linkCard;
-        this.text = text;
-        this.like = like;
-    }
 
     protected NoteData(Parcel in) {
         title = in.readString();
         tag = in.readString();
-        key = in.readString();
-        created = in.readString();
+        id = in.readString();
+        date = new Date(in.readLong());
         linkCard = in.readString();
         text = in.readString();
         like = in.readByte() != 0;
@@ -54,12 +56,12 @@ public class NoteData implements Parcelable  {
         return tag;
     }
 
-    public String getKey() {
-        return key;
+    public String getId() {
+        return id;
     }
 
-    public String getCreated() {
-        return created;
+    public Date getDate() {
+        return date;
     }
 
     public String getLinkCard() {
@@ -74,46 +76,33 @@ public class NoteData implements Parcelable  {
         return like;
     }
 
-    public String getFormatDate() {
-        long date = Long.valueOf(getCreated());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        String stringDate = dateFormat.format(date);
-        return stringDate;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public NoteData setTitle(String title) {
-        this.title = title;
-        return this;
-    }
     public void setTag(String tag) {
         this.tag = tag;
     }
 
-    public NoteData setKey(String key) {
-        this.key = key;
-        return this;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public NoteData setCreated(String created) {
-        this.created = created;
-        return this;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public NoteData setLinkCard(String linkCard) {
+    public void setLinkCard(String linkCard) {
         this.linkCard = linkCard;
-        return this;
     }
 
-    public NoteData setText(String text) {
+    public void setText(String text) {
         this.text = text;
-        return this;
     }
 
     public void setLike(boolean important) {
         like = important;
     }
-
-
 
     @Override
     public int describeContents() {
@@ -124,8 +113,8 @@ public class NoteData implements Parcelable  {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(tag);
-        dest.writeString(key);
-        dest.writeString(created);
+        dest.writeString(id);
+        dest.writeLong(date.getTime());
         dest.writeString(linkCard);
         dest.writeString(text);
         dest.writeByte((byte) (like ? 1 : 0));

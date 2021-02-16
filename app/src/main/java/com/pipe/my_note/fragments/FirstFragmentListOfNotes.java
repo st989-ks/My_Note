@@ -26,14 +26,13 @@ import com.pipe.my_note.NavigationFragment;
 import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
-import com.pipe.my_note.data.NoteSourceImpl;
-import com.pipe.my_note.data.NoteSourceResponse;
+import com.pipe.my_note.data.NotesSourceFirebaseImpl;
+import com.pipe.my_note.data.NotesSourceResponse;
 import com.pipe.my_note.data.StringData;
 import com.pipe.my_note.observe.Observer;
 import com.pipe.my_note.observe.Publisher;
 import com.pipe.my_note.ui.RecyclerViewAdapter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -52,7 +51,6 @@ public class FirstFragmentListOfNotes extends Fragment {
 
     public boolean isLandscape;
     private RecyclerView recyclerView;
-    private String newDay;
 
     public static FirstFragmentListOfNotes newInstance() {
         return new FirstFragmentListOfNotes();
@@ -116,14 +114,9 @@ public class FirstFragmentListOfNotes extends Fragment {
         });
 
         addNote.setOnMenuItemClickListener(item -> {
-            getDate();
-
-            notesSource.addNoteData(new NoteData(
-                    getString(R.string.current_note)+" "+(notesSource.size()),
-                    getString(R.string.new_note),
-                    Integer.toString(notesSource.size()), newDay,
+            notesSource.addNoteData(new NoteData(getString(R.string.current_note)+" "+(notesSource.size()),
+                    getString(R.string.new_note), Integer.toString(notesSource.size()), new Date(),
                     "", "", true));
-
 
             recyclerViewAdapter.notifyItemInserted(notesSource.size()-1);
             recyclerViewAdapter.notifyDataSetChanged();
@@ -161,13 +154,12 @@ public class FirstFragmentListOfNotes extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_view);
         initRecyclerView();
         setHasOptionsMenu(true);
-        notesSource = new NoteSourceImpl(getResources()).init(new NoteSourceResponse() {
+        notesSource = new NotesSourceFirebaseImpl().init(new NotesSourceResponse() {
             @Override
             public void initialized(NoteSource cardsData) {
                 recyclerViewAdapter.notifyDataSetChanged();
             }
         });
-
     }
 
     public void initRecyclerView() {
@@ -176,7 +168,7 @@ public class FirstFragmentListOfNotes extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         // Установим адаптер
-        recyclerViewAdapter = new RecyclerViewAdapter(notesSource, this);
+        recyclerViewAdapter = new RecyclerViewAdapter(this);
         recyclerView.setAdapter(recyclerViewAdapter);
 
         // Установим анимацию. А чтобы было хорошо заметно, сделаем анимацию долгой
@@ -223,13 +215,6 @@ public class FirstFragmentListOfNotes extends Fragment {
         } else {
             return R.id.first_note;
         }
-    }
-    public String getDate() {
-        Date newDay = new Date();
-        long longNowDay = newDay.getTime();
-        this.newDay = Long.toString(longNowDay);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        return dateFormat.format(longNowDay);
     }
 
     public void deleteNoteData (){

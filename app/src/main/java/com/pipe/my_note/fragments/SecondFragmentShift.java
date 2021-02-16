@@ -15,17 +15,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.pipe.my_note.MainActivity;
 import com.pipe.my_note.NavigationFragment;
 import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
-import com.pipe.my_note.data.NoteSourceImpl;
 import com.pipe.my_note.data.StringData;
 import com.pipe.my_note.observe.Publisher;
 import com.pipe.my_note.ui.RecyclerViewAdapter;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -33,7 +33,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class SecondFragmentShift extends Fragment {
 
     private EditText tvName;
-    private TextView tvCreated;
+    private TextView dateCreated;
     private TextView tvKey;
     private EditText tvTags;
     private EditText tvLinkCard;
@@ -41,7 +41,6 @@ public class SecondFragmentShift extends Fragment {
 
     NavigationFragment navigationFragment;
     private RecyclerViewAdapter recyclerViewAdapter;
-    private String newDay;
     private NoteData noteData;
     private Publisher publisher;
     private NoteSource notesSource;
@@ -96,16 +95,16 @@ public class SecondFragmentShift extends Fragment {
 
     private void initTextCardChange(View view) {
         tvName = view.findViewById(R.id.zettelkasten_name_enter);
-        tvCreated = view.findViewById(R.id.zettelkasten_created_enter);
+        dateCreated = view.findViewById(R.id.zettelkasten_created_enter);
         tvTags = view.findViewById(R.id.zettelkasten_tags_enter);
         tvKey = view.findViewById(R.id.zettelkasten_key_enter);
         tvLinkCard = view.findViewById(R.id.zettelkasten_link_card_enter);
         tvText = view.findViewById(R.id.zettelkasten_text_enter);
         if (noteData != null) {
             tvName.setText(noteData.getTitle());
-            tvCreated.setText(noteData.getFormatDate());
+            dateCreated.setText(new SimpleDateFormat("dd/MM/yy").format(noteData.getDate()));
             tvTags.setText(noteData.getTag());
-            tvKey.setText(noteData.getKey());
+            tvKey.setText(noteData.getId());
             tvLinkCard.setText(noteData.getLinkCard());
             tvText.setText(noteData.getText());
         }
@@ -114,10 +113,10 @@ public class SecondFragmentShift extends Fragment {
         String name = tvName.getText().toString();
         String tags = tvTags.getText().toString();
         String key = tvKey.getText().toString();
-        String created = noteData.getCreated();
+        Date date = noteData.getDate();
         String linkCard = tvLinkCard.getText().toString();
         String text = tvText.getText().toString();
-        return new NoteData( name, tags, key, created,
+        return new NoteData( name, tags, key, date,
                     linkCard, text, false);
     }
 
@@ -131,7 +130,7 @@ public class SecondFragmentShift extends Fragment {
         SharedPreferences sharedPref = requireActivity().getSharedPreferences(StringData.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         // Сохраняем посредством специального класса editor
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(StringData.ARG_SIX_POSITION, Integer.parseInt(noteData.getKey()));
+        editor.putInt(StringData.ARG_SIX_POSITION, Integer.parseInt(noteData.getId()));
         editor.putBoolean(StringData.ARG_FIRST_BULLED_POSITION, true);
         // Сохраняем значения
         editor.apply();

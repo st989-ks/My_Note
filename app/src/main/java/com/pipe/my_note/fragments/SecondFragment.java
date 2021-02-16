@@ -105,7 +105,7 @@ public class SecondFragment extends Fragment {
             tvName.setText(noteData.getTitle());
             tvCreated.setText(noteData.getFormatDate());
             tvTags.setText(noteData.getTag());
-            tvKey.setText(noteData.getKey());
+            tvKey.setText(noteData.getId());
             tvLinkCard.setText(noteData.getLinkCard());
             tvText.setText(noteData.getText());
         }
@@ -126,8 +126,8 @@ public class SecondFragment extends Fragment {
             publisher.subscribe(new Observer() {
                 @Override
                 public void updateNotes(NoteData note) {
-                    notesSource.updateNoteData(Integer.parseInt(noteData.getKey()) - 1, note);
-                    recyclerViewAdapter.notifyItemChanged(Integer.parseInt(noteData.getKey()) - 1);
+                    notesSource.updateNoteData(Integer.parseInt(noteData.getId()) - 1, note);
+                    recyclerViewAdapter.notifyItemChanged(Integer.parseInt(noteData.getId()) - 1);
                 }
             });
         });
@@ -138,7 +138,7 @@ public class SecondFragment extends Fragment {
         SharedPreferences sharedPref = requireActivity().getSharedPreferences(StringData.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
         // Сохраняем посредством специального класса editor
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(StringData.ARG_SIX_POSITION, Integer.parseInt(noteData.getKey()));
+        editor.putInt(StringData.ARG_SIX_POSITION, Integer.parseInt(noteData.getId()));
         // Сохраняем значения
         editor.apply();
     }

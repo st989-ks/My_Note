@@ -17,7 +17,6 @@ import androidx.fragment.app.FragmentActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
-import com.pipe.my_note.data.NoteSourceImpl;
 import com.pipe.my_note.data.StringData;
 import com.pipe.my_note.fragments.FirstFragmentListOfNotes;
 import com.pipe.my_note.fragments.ForthFragmentAbout;
