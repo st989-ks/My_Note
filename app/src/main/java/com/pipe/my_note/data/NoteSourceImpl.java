@@ -28,6 +28,8 @@ public class NoteSourceImpl implements NoteSource, Parcelable {
         notes = new ArrayList<>();
     }
 
+    // Коллекция документов
+
     protected NoteSourceImpl(Parcel in) {
         notes = in.createTypedArrayList(NoteData.CREATOR);
     }
@@ -53,12 +55,11 @@ public class NoteSourceImpl implements NoteSource, Parcelable {
     private NoteData createNewNote(int index) {
         int likeInt = Integer.parseInt(resources.getStringArray(R.array.like)[index]);
         Boolean like = likeInt == 1;
-        NoteData note = new NoteData(
-                resources.getStringArray(R.array.title)[index],
+        NoteData note = new NoteData(resources.getStringArray(R.array.title)[index],
                 resources.getStringArray(R.array.tags)[index],
-                resources.getIntArray(R.array.key)[index],
-                Long.parseLong(resources.getStringArray(R.array.date)[index]),
-                resources.getIntArray(R.array.related_cards)[index],
+                resources.getStringArray(R.array.key)[index],
+                resources.getStringArray(R.array.date_create)[index],
+                resources.getStringArray(R.array.related_cards)[index],
                 resources.getStringArray(R.array.text)[index],
                 like);
         return note;

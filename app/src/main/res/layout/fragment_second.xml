@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/button_change"
+        android:id="@+id/zettelkasten_button_change"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-thin"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:text="@string/link_card"
+            android:text="@string/key"
             android:textSize="@dimen/text_size_20" />
     </LinearLayout>
 

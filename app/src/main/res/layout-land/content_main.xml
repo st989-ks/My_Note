@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?><!-- это макет для альбомной ориентации -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,17 +12,15 @@
         android:layout_height="match_parent">
 
         <FrameLayout
-            android:id="@+id/root_of_note"
-            android:name="com.pipe.my_note.FirstFragment"
+            android:id="@+id/first_note"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
         <FrameLayout
-            android:id="@+id/second_zettelkasten"
+            android:id="@+id/second_note"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
     </LinearLayout>
 </LinearLayout>
-

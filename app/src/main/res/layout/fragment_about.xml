@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/margin_10"
-    tools:context=".fragment.AboutFragment">
-
+    tools:context=".fragments.ThirdFragmentSettings">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/fragment_about"
-        android:textSize="@dimen/text_size_40" />
+        android:textSize="@dimen/text_size_40"
+        android:gravity="center_horizontal|center_vertical"/>
 </LinearLayout>

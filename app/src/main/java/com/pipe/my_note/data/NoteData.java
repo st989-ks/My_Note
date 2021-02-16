@@ -19,14 +19,14 @@ public class NoteData implements Parcelable  {
     };
     private String title;
     private String tag;
-    private int key;
-    private long created;
-    private int linkCard;
+    private String key;
+    private String created;
+    private String linkCard;
     private String text;
     private boolean like;
 
-    public NoteData(String title, String tag, int key, long created,
-                    int linkCard, String text, boolean like) {
+    public NoteData(String title, String tag, String key, String created,
+                    String linkCard, String text, boolean like) {
         this.title = title;
         this.tag = tag;
         this.key = key;
@@ -39,9 +39,9 @@ public class NoteData implements Parcelable  {
     protected NoteData(Parcel in) {
         title = in.readString();
         tag = in.readString();
-        key = in.readInt();
-        created = in.readLong();
-        linkCard = in.readInt();
+        key = in.readString();
+        created = in.readString();
+        linkCard = in.readString();
         text = in.readString();
         like = in.readByte() != 0;
     }
@@ -50,40 +50,58 @@ public class NoteData implements Parcelable  {
         return title;
     }
 
-    public NoteData setTitle(String title) {
-        this.title = title;
-        return this;
+    public String getTag() {
+        return tag;
     }
 
-    public int getKey() {
+    public String getKey() {
         return key;
     }
 
-    public NoteData setKey(int key) {
-        this.key = key;
-        return this;
-    }
-
-    public long getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public NoteData setCreated(long created) {
-        this.created = created;
-        return this;
-    }
-
-    public int getLinkCard() {
+    public String getLinkCard() {
         return linkCard;
-    }
-
-    public NoteData setLinkCard(int linkCard) {
-        this.linkCard = linkCard;
-        return this;
     }
 
     public String getText() {
         return text;
+    }
+
+    public boolean getLike() {
+        return like;
+    }
+
+    public String getFormatDate() {
+        long date = Long.valueOf(getCreated());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        String stringDate = dateFormat.format(date);
+        return stringDate;
+    }
+
+    public NoteData setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public NoteData setKey(String key) {
+        this.key = key;
+        return this;
+    }
+
+    public NoteData setCreated(String created) {
+        this.created = created;
+        return this;
+    }
+
+    public NoteData setLinkCard(String linkCard) {
+        this.linkCard = linkCard;
+        return this;
     }
 
     public NoteData setText(String text) {
@@ -91,28 +109,11 @@ public class NoteData implements Parcelable  {
         return this;
     }
 
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public boolean getLike() {
-        return like;
-    }
-
     public void setLike(boolean important) {
         like = important;
     }
 
-    public String getFormatDate() {
-        long date = getCreated();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        String stringDate = dateFormat.format(date);
-        return stringDate;
-    }
+
 
     @Override
     public int describeContents() {
@@ -123,9 +124,9 @@ public class NoteData implements Parcelable  {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(tag);
-        dest.writeInt(key);
-        dest.writeLong(created);
-        dest.writeInt(linkCard);
+        dest.writeString(key);
+        dest.writeString(created);
+        dest.writeString(linkCard);
         dest.writeString(text);
         dest.writeByte((byte) (like ? 1 : 0));
     }
