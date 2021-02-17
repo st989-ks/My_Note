@@ -10,6 +10,8 @@ public class StringData {
     public static String ARG_FIFE_COUNT = "ARG_FIFE_COUNT";
     public static String SHARED_PREFERENCE_NAME ="SHARED_PREFERENCE_NAME";
     public static String ARG_SIX_POSITION ="ARG_SIX__POSITION";
-    public static String ARG_SIX_FIRST_FRAGMENT ="ARG_SIX_FIRST_FRAGMENT";
+    public static String ARG_SIX_FIRST_FRAGMENT_POSITION ="ARG_SIX_FIRST_FRAGMENT";
+    public static String ARG_SIX_FIRST_FRAGMENT_NOTE ="ARG_SIX_FIRST_FRAGMENT_NOTE";
+    public static String TAG ="NOTES_SIZE";
 
 }

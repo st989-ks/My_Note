@@ -15,11 +15,10 @@ public class NoteData implements Parcelable  {
     private String text;
     private boolean like;
 
-    public NoteData(String title, String tag, String id, Date data,
+    public NoteData(String title, String tag, Date data,
                     String linkCard, String text, boolean like) {
         this.title = title;
         this.tag = tag;
-        this.id = id;
         this.date = data;
         this.linkCard = linkCard;
         this.text = text;
@@ -41,7 +40,6 @@ public class NoteData implements Parcelable  {
     protected NoteData(Parcel in) {
         title = in.readString();
         tag = in.readString();
-        id = in.readString();
         date = new Date(in.readLong());
         linkCard = in.readString();
         text = in.readString();
@@ -113,7 +111,6 @@ public class NoteData implements Parcelable  {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(tag);
-        dest.writeString(id);
         dest.writeLong(date.getTime());
         dest.writeString(linkCard);
         dest.writeString(text);

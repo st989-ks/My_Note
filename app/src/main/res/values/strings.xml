@@ -9,11 +9,11 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="created">xx.xx.xx</string>
-    <string name="nameCart">Name title</string>
-    <string name="tags">#tag</string>
-    <string name="key">Key card</string>
-    <string name="text">Text card</string>
-    <string name="link_card">Ввести текст</string>
+    <string name="nameCart">Новая записка</string>
+    <string name="tags">#пусто</string>
+    <string name="key">(Сылка)</string>
+    <string name="text">Введите текст</string>
+    <string name="link_card">Ссылка</string>
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="menu_settings">Settings</string>
@@ -32,6 +32,6 @@
     <string name="date_card">Date</string>
     <string name="button_cancel">cancel</string>
     <string name="button_save">save</string>
-    <string name="new_note">#пусто</string>
+    <string name="new_note">Укажите тег</string>
     <string name="current_note">Новая запись</string>
 </resources>

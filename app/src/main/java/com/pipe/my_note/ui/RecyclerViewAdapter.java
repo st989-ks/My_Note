@@ -22,11 +22,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private OnItemClickListener clickListener;
     private int menuPosition;
 
-
     public RecyclerViewAdapter(Fragment fragment) {
         this.fragment = fragment;
     }
-    public void setNoteSource(NoteSource noteSource){
+
+    public void setNoteSource(NoteSource noteSource) {
         this.dataSource = noteSource;
         notifyDataSetChanged();
     }

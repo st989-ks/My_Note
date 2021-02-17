@@ -27,12 +27,12 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/zettelkasten_key"
+            android:id="@+id/zettelkasten_tags"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start"
-            android:text="@string/key"
+            android:text="@string/tags"
             android:textSize="@dimen/text_size_20" />
 
         <TextView
@@ -51,21 +51,12 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/zettelkasten_tags"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="start"
-            android:text="@string/tags"
-            android:textSize="@dimen/text_size_20" />
-
-        <TextView
             android:id="@+id/zettelkasten_link_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="end"
-            android:text="@string/key"
+            android:gravity="start"
+            android:text="@string/link_card"
             android:textSize="@dimen/text_size_20" />
     </LinearLayout>
 

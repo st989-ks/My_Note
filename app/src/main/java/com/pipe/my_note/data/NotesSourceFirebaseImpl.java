@@ -76,6 +76,17 @@ public class NotesSourceFirebaseImpl implements NoteSource {
     }
 
     @Override
+    public int getNoteDataPosition(NoteData findNote) {
+        if (findNote != null) {
+            for (int index = 0; index < notesData.size(); index++) {
+                if (notesData.get(index).equals(findNote))
+                    return index;
+            }
+        }
+        return 0;
+    }
+
+    @Override
     public int size() {
         if (notesData == null) {
             return 0;
@@ -101,12 +112,9 @@ public class NotesSourceFirebaseImpl implements NoteSource {
     @Override
     public void addNoteData(NoteData noteData) {
         // Добавить документ
-        collection.add(NoteDataMapping.toDocument(noteData)).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                noteData.setId(documentReference.getId());
-            }
-        })/*.addOnFailureListener()*/;
+        collection.add(NoteDataMapping.toDocument(noteData))
+                .addOnSuccessListener(documentReference ->
+                noteData.setId(documentReference.getId()))/*.addOnFailureListener()*/;
     }
 
     @Override

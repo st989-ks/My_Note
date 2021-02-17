@@ -1,5 +1,6 @@
 package com.pipe.my_note.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -25,6 +26,8 @@ import com.pipe.my_note.observe.Observer;
 import com.pipe.my_note.observe.Publisher;
 import com.pipe.my_note.ui.RecyclerViewAdapter;
 
+import java.text.SimpleDateFormat;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class SecondFragment extends Fragment {
@@ -36,6 +39,7 @@ public class SecondFragment extends Fragment {
     TextView tvLinkCard;
     TextView tvText;
 
+    private int positionNote;
     private NoteData noteData;
     private Publisher publisher;
     NavigationFragment navigationFragment;
@@ -49,9 +53,17 @@ public class SecondFragment extends Fragment {
         secondFragment.setArguments(args);
         return secondFragment;
     }
+    public static SecondFragment newInstance(NoteData content, int position) {
+        SecondFragment secondFragment = new SecondFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(StringData.ARG_SECOND, content);
+        args.putInt(StringData.ARG_FIFE_COUNT,position);
+        secondFragment.setArguments(args);
+        return secondFragment;
+    }
 
     public static int getIdFromOrientation(FragmentActivity activity) {
-        Boolean isLandscape = activity.getResources().getConfiguration()
+        boolean isLandscape = activity.getResources().getConfiguration()
                 .orientation == Configuration.ORIENTATION_LANDSCAPE;
         if (isLandscape) {
             return R.id.second_note;
@@ -80,6 +92,7 @@ public class SecondFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             noteData = getArguments().getParcelable(StringData.ARG_SECOND);
+            positionNote = getArguments().getInt(StringData.ARG_FIFE_COUNT);
         }
     }
 
@@ -90,22 +103,20 @@ public class SecondFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_second, container, false);
         initTextCard(view);
         initButton(view);
-        writePositionNote();
         return view;
     }
 
+    @SuppressLint("SimpleDateFormat")
     private void initTextCard(View view) {
         tvName = view.findViewById(R.id.zettelkasten_name);
         tvCreated = view.findViewById(R.id.zettelkasten_created);
         tvTags = view.findViewById(R.id.zettelkasten_tags);
-        tvKey = view.findViewById(R.id.zettelkasten_key);
         tvLinkCard = view.findViewById(R.id.zettelkasten_link_card);
         tvText = view.findViewById(R.id.zettelkasten_text);
         if (noteData != null) {
             tvName.setText(noteData.getTitle());
-            tvCreated.setText(noteData.getFormatDate());
+            tvCreated.setText(new SimpleDateFormat("dd/MM/yy").format(noteData.getDate()));
             tvTags.setText(noteData.getTag());
-            tvKey.setText(noteData.getId());
             tvLinkCard.setText(noteData.getLinkCard());
             tvText.setText(noteData.getText());
         }
@@ -113,24 +124,19 @@ public class SecondFragment extends Fragment {
 
     private void initButton(View view) {
         Button buttonChange = view.findViewById(R.id.zettelkasten_button_change);
-        recyclerViewAdapter = new RecyclerViewAdapter(notesSource, this);
-        buttonChange.setOnClickListener(v -> {
+        recyclerViewAdapter = new RecyclerViewAdapter(this);
 
-//            MenuToolbar.getIdFromOrientation(activity);
+        buttonChange.setOnClickListener(v -> {
             Fragment secondFragmentShift;
             secondFragmentShift = SecondFragmentShift.newInstance(noteData);
-
-
-            navigationFragment.replaceFragment( getIdFromOrientation(getActivity()),
+            navigationFragment.replaceFragment( getIdFromOrientation(requireActivity()),
                     secondFragmentShift, true);
-            publisher.subscribe(new Observer() {
-                @Override
-                public void updateNotes(NoteData note) {
-                    notesSource.updateNoteData(Integer.parseInt(noteData.getId()) - 1, note);
-                    recyclerViewAdapter.notifyItemChanged(Integer.parseInt(noteData.getId()) - 1);
-                }
-            });
         });
+    }
+
+    private void readNewCurrentNote() {
+        SharedPreferences sharedPref = requireActivity().getSharedPreferences(StringData.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        int newCurrentNote = sharedPref.getInt(StringData.ARG_FIFE_COUNT, Integer.parseInt("0"));
     }
 
     private void writePositionNote() {

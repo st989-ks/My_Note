@@ -25,32 +25,35 @@ import com.pipe.my_note.observe.Publisher;
 import com.pipe.my_note.ui.RecyclerViewAdapter;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class SecondFragmentShift extends Fragment {
 
-    private EditText tvName;
+    NavigationFragment navigationFragment;
+    boolean changeNote;
+    private EditText tvTitle;
     private TextView dateCreated;
-    private TextView tvKey;
     private EditText tvTags;
     private EditText tvLinkCard;
     private EditText tvText;
-
-    NavigationFragment navigationFragment;
     private RecyclerViewAdapter recyclerViewAdapter;
     private NoteData noteData;
     private Publisher publisher;
     private NoteSource notesSource;
 
-    public static SecondFragmentShift newInstance(NoteData content) {
-        SecondFragmentShift secondFragmentShift = new SecondFragmentShift();
+    public static SecondFragmentShift newInstance(NoteData noteData) {
+        SecondFragmentShift fragment = new SecondFragmentShift();
         Bundle args = new Bundle();
-        args.putParcelable(StringData.ARG_SECOND_CREATE, content);
-        secondFragmentShift.setArguments(args);
-        return secondFragmentShift;
+        args.putParcelable(StringData.ARG_SECOND_CREATE, noteData);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static SecondFragmentShift newInstance() {
+        SecondFragmentShift fragment = new SecondFragmentShift();
+        return fragment;
     }
 
     @Override
@@ -81,7 +84,12 @@ public class SecondFragmentShift extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_second_shift, container, false);
-        initTextCardChange(view);
+        initView(view);
+        if (noteData != null) {
+            initTextNoteChange();
+        } else {
+            initTextNewNote();
+        }
         initButton(view);
         return view;
     }
@@ -89,35 +97,49 @@ public class SecondFragmentShift extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        writePositionNote();
+//        writePositionNote();
         outState.putParcelable(StringData.ARG_SECOND_CREATE_LAND, noteData);
     }
 
-    private void initTextCardChange(View view) {
-        tvName = view.findViewById(R.id.zettelkasten_name_enter);
+    private void initView(View view) {
+        tvTitle = view.findViewById(R.id.zettelkasten_name_enter);
         dateCreated = view.findViewById(R.id.zettelkasten_created_enter);
         tvTags = view.findViewById(R.id.zettelkasten_tags_enter);
-        tvKey = view.findViewById(R.id.zettelkasten_key_enter);
         tvLinkCard = view.findViewById(R.id.zettelkasten_link_card_enter);
         tvText = view.findViewById(R.id.zettelkasten_text_enter);
-        if (noteData != null) {
-            tvName.setText(noteData.getTitle());
-            dateCreated.setText(new SimpleDateFormat("dd/MM/yy").format(noteData.getDate()));
-            tvTags.setText(noteData.getTag());
-            tvKey.setText(noteData.getId());
-            tvLinkCard.setText(noteData.getLinkCard());
-            tvText.setText(noteData.getText());
-        }
     }
+
+    private void initTextNoteChange() {
+        changeNote = true;
+        tvTitle.setText(noteData.getTitle());
+        dateCreated.setText(new SimpleDateFormat("dd/MM/yy").format(noteData.getDate()));
+        tvTags.setText(noteData.getTag());
+        tvLinkCard.setText(noteData.getLinkCard());
+        tvText.setText(noteData.getText());
+    }
+
+    private void initTextNewNote() {
+        tvTitle.setText("");
+        dateCreated.setText(new SimpleDateFormat("dd/MM/yy").format(new Date()));
+        tvTags.setText("");
+        tvLinkCard.setText("");
+        tvText.setText("");
+    }
+
     private NoteData collectNoteData() {
-        String name = tvName.getText().toString();
-        String tags = tvTags.getText().toString();
-        String key = tvKey.getText().toString();
-        Date date = noteData.getDate();
-        String linkCard = tvLinkCard.getText().toString();
-        String text = tvText.getText().toString();
-        return new NoteData( name, tags, key, date,
-                    linkCard, text, false);
+        String title = this.tvTitle.getText().toString();
+        String tag = this.tvTags.getText().toString();
+        String linkCard = this.tvLinkCard.getText().toString();
+        String text = this.tvText.getText().toString();
+        if (noteData != null) {
+            NoteData answer;
+            answer = new NoteData(title, tag, this.noteData.getDate(), linkCard, text, false);
+            answer.setId(noteData.getId());
+            return answer;
+        } else {
+            Date date = new Date();
+            return new NoteData(title, tag, date, linkCard, text, false);
+        }
     }
 
     private void readNewCurrentNote() {
@@ -135,20 +157,25 @@ public class SecondFragmentShift extends Fragment {
         // Сохраняем значения
         editor.apply();
     }
+
     private void initButton(View view) {
         Button buttonSave = view.findViewById(R.id.zettelkasten_button_save);
         buttonSave.setOnClickListener(v -> {
             noteData = collectNoteData();
             publisher.notifySingle(noteData);
-            Toast.makeText(getContext(), R.string.button_save, Toast.LENGTH_SHORT).show();
-            navigationFragment.popBackStack(getActivity());
+            if (changeNote) {
+                Fragment fragmentFirst = FirstFragmentListOfNotes.newInstance();
+                navigationFragment.replaceFragment(R.id.first_note, fragmentFirst, false);
+            } else {
+                navigationFragment.popBackStack(requireActivity());
+            }
 
         });
 
         Button buttonCancel = view.findViewById(R.id.zettelkasten_button_cancel);
         buttonCancel.setOnClickListener(v -> {
             Toast.makeText(getContext(), R.string.button_cancel, Toast.LENGTH_SHORT).show();
-            navigationFragment.popBackStack(getActivity());
+            navigationFragment.popBackStack(requireActivity());
         });
     }
 

@@ -21,7 +21,6 @@ class NoteDataMapping {
         NoteData answer = new NoteData(
                 (String) doc.get(Fields.NAME),
                 (String) doc.get(Fields.TAG),
-                (String) doc.get(id),
                 timeStamp.toDate(),
                 (String) doc.get(Fields.LINC_CARD),
                 (String) doc.get(Fields.TEXT),
@@ -34,10 +33,10 @@ class NoteDataMapping {
     public static Map<String, Object> toDocument(NoteData noteData) {
         Map<String, Object> answer = new HashMap<>();
         answer.put(Fields.NAME, noteData.getTitle());
-        answer.put(Fields.TAG, noteData.getTitle());
+        answer.put(Fields.TAG, noteData.getTag());
         answer.put(Fields.DATE, noteData.getDate());
-        answer.put(Fields.LINC_CARD, noteData.getTitle());
-        answer.put(Fields.TEXT, noteData.getTitle());
+        answer.put(Fields.LINC_CARD, noteData.getLinkCard());
+        answer.put(Fields.TEXT, noteData.getText());
         answer.put(Fields.LIKE, noteData.getLike());
         return answer;
     }
