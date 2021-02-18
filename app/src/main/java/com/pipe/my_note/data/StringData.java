@@ -13,5 +13,6 @@ public class StringData {
     public static String ARG_SIX_FIRST_FRAGMENT_POSITION ="ARG_SIX_FIRST_FRAGMENT";
     public static String ARG_SIX_FIRST_FRAGMENT_NOTE ="ARG_SIX_FIRST_FRAGMENT_NOTE";
     public static String TAG ="NOTES_SIZE";
+    public static String DIALOG ="DIALOG";
 
 }
