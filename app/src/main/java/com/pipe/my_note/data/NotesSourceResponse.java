@@ -1,5 +1,5 @@
 package com.pipe.my_note.data;
 
-public interface NoteSourceResponse {
+public interface NotesSourceResponse {
     void initialized(NoteSource noteData);
 }

@@ -14,18 +14,19 @@ import com.pipe.my_note.R;
 import com.pipe.my_note.data.NoteData;
 import com.pipe.my_note.data.NoteSource;
 
+import java.text.SimpleDateFormat;
+
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private final Fragment fragment;
     private NoteSource dataSource;
     private OnItemClickListener clickListener;
     private int menuPosition;
 
-
-    public RecyclerViewAdapter(NoteSource dataSource, Fragment fragment) {
-        this.dataSource = dataSource;
+    public RecyclerViewAdapter(Fragment fragment) {
         this.fragment = fragment;
     }
-    public void setNoteSource(NoteSource noteSource){
+
+    public void setNoteSource(NoteSource noteSource) {
         this.dataSource = noteSource;
         notifyDataSetChanged();
     }
@@ -89,10 +90,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         public void onBind(NoteData noteData) {
-            getTextViewName().setText(noteData.getTitle());
-            getTextViewTag().setText(noteData.getTag());
-            getTextViewDate().setText(noteData.getFormatDate());
-            getCheckBox().setChecked(noteData.getLike());
+            textViewName.setText(noteData.getTitle());
+            textViewTag.setText(noteData.getTag());
+            checkBox.setChecked(noteData.getLike());
+            textViewDate.setText(new SimpleDateFormat("dd/MM/yy").format(noteData.getDate()));
         }
 
         private void registerContextMenu(@NonNull View view) {
@@ -103,21 +104,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 });
                 fragment.registerForContextMenu(view);
             }
-        }
-        public TextView getTextViewName() {
-            return textViewName;
-        }
-
-        public TextView getTextViewTag() {
-            return textViewTag;
-        }
-
-        public TextView getTextViewDate() {
-            return textViewDate;
-        }
-
-        public CheckBox getCheckBox() {
-            return checkBox;
         }
     }
 }
